@@ -6,53 +6,82 @@
     <title>Phil | Computer Engineering Portfolio</title>
     <style>
         :root {
-            --primary: #00ffcc;
-            --bg: #0f172a;
-            --text: #f8fafc;
+            --primary: #00ffcc; /* Bright accent cyan */
+            --secondary: #64ffda; /* Lighter accent */
+            --bg: #0f172a; /* Deep navy background */
+            --container-bg: rgba(30, 41, 59, 0.5);
+            --text-main: #f8fafc; /* Near-white */
+            --text-sub: #94a3b8; /* Cool grey */
         }
         body {
             background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 1rem;
         }
         .container {
             text-align: center;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            background: var(--container-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             max-width: 500px;
+            box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
         }
-        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        p { color: #94a3b8; line-height: 1.6; }
-        .highlight { color: var(--primary); font-weight: bold; }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            margin-bottom: 1.5rem;
+        }
+        h1 { font-size: 2.8rem; margin: 0; font-weight: 700; }
+        .subtitle { color: var(--text-sub); font-size: 1.1rem; font-weight: 400; margin-top: 0.2rem; }
+        .highlight { color: var(--primary); font-weight: 600; }
+        .about { color: #cbd5e1; line-height: 1.7; margin: 2rem 0; font-size: 1.05rem; }
         .links { margin-top: 2rem; }
         .btn {
             text-decoration: none;
             color: var(--bg);
             background: var(--primary);
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: transform 0.2s;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease-in-out;
+            display: inline-block;
         }
-        .btn:hover { transform: scale(1.05); }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.4);
+            background: var(--secondary);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <img src="phil-portfolio.png" alt="Profile photo of Phil" class="profile-pic">
+        
         <h1>Hi, I'm <span class="highlight">Phil</span></h1>
-        <p>Computer Engineering Student</p>
-        <p>Focused on <span class="highlight">Predictive Maintenance</span>, FPGA (Cyclone IV), and embedded systems. When I'm not coding, I'm usually at the gym or upgrading my PC.</p>
+        <p class="subtitle">Computer Engineering Student</p>
+        
+        <p class="about">
+            I'm focused on the intersection of hardware and software, currently developing **predictive maintenance** solutions using <span class="highlight">Cyclone IV FPGAs</span> and embedded systems. When I'm not coding Verilog or C++, you can find me at the gym or upgrading my PC.
+        </p>
         
         <div class="links">
-            <a href="https://github.com" class="btn">View My Projects</a>
+            <a href="https://github.com/Phil-CPE?tab=repositories" class="btn">Explore My Projects</a>
         </div>
     </div>
 </body>
