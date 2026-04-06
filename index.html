@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phil | Computer Engineering Portfolio</title>
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #0f172a;
+            --text: #f8fafc;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        p { color: #94a3b8; line-height: 1.6; }
+        .highlight { color: var(--primary); font-weight: bold; }
+        .links { margin-top: 2rem; }
+        .btn {
+            text-decoration: none;
+            color: var(--bg);
+            background: var(--primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hi, I'm <span class="highlight">Phil</span></h1>
+        <p>Computer Engineering Student</p>
+        <p>Focused on <span class="highlight">Predictive Maintenance</span>, FPGA (Cyclone IV), and embedded systems. When I'm not coding, I'm usually at the gym or upgrading my PC.</p>
+        
+        <div class="links">
+            <a href="https://github.com" class="btn">View My Projects</a>
+        </div>
+    </div>
+</body>
+</html>
