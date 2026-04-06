@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ina | Portfolio</title>
+    <title>Energy Monitoring | Ina</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #00ffcc;
-            --secondary: #64ffda;
+            --primary: #FFC0CB; /* Pink */
             --bg: #0f172a;
-            --container-bg: rgba(30, 41, 59, 0.5);
+            --container-bg: rgba(30, 41, 59, 0.6);
             --text-main: #f8fafc;
-            --text-sub: #94a3b8;
         }
         body {
             background-color: var(--bg);
@@ -19,55 +18,98 @@
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 1rem;
+            padding: 3rem 1.5rem;
+        }
+        /* Big Title Styling */
+        .main-title {
+            font-size: 3.5rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(255, 192, 203, 0.4);
+            text-align: center;
         }
         .container {
             text-align: center;
-            padding: 3rem 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2rem;
+            border: 2px solid var(--primary);
             border-radius: 20px;
             background: var(--container-bg);
             backdrop-filter: blur(12px);
+            width: 100%;
             max-width: 500px;
+            margin-bottom: 2rem;
         }
         .profile-pic {
-            width: 150px;
-            height: 150px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
-        h1 { font-size: 2.8rem; margin: 0; }
-        .highlight { color: var(--primary); }
-        .about { color: #cbd5e1; line-height: 1.7; margin: 2rem 0; font-size: 1.2rem; font-weight: bold; }
-        .btn {
-            text-decoration: none;
-            color: var(--bg);
-            background: var(--primary);
-            padding: 0.9rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            display: inline-block;
+        h2 { font-size: 2rem; margin: 0; color: var(--primary); }
+        .about { color: #f8fafc; line-height: 1.6; margin: 1.2rem 0; font-size: 1.1rem; font-weight: bold; }
+        
+        .graph-container {
+            width: 100%;
+            max-width: 550px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 192, 203, 0.3);
+        }
+
+        /* Mobile adjustment for the big title */
+        @media (max-width: 600px) {
+            .main-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
+
+    <h1 class="main-title">ENERGY MONITORING</h1>
+
     <div class="container">
         <img src="phil-portfolio.png" alt="Profile photo" class="profile-pic">
-        
-        <h1>Hi, I'm <span class="highlight">Ina</span></h1>
-        
-        <p class="about">
-            TEST TEST TEST ENERGY GAP GAPGAP
-        </p>
-        
-        <div class="links">
-            <a href="https://github.com/Phil-CPE?tab=repositories" class="btn">Explore My Projects</a>
-        </div>
+        <h2>Hi, I'm Ina</h2>
+        <p class="about">TEST TEST TEST ENERGY GAP GAPGAP</p>
     </div>
+
+    <div class="graph-container">
+        <h3 style="color: #333; text-align: center; margin-top: 0; font-family: sans-serif;">Live Performance Tracking</h3>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Energy Levels',
+                    data: [12, 19, 15, 8, 22, 30, 25],
+                    borderColor: '#FFC0CB',
+                    backgroundColor: 'rgba(255, 192, 203, 0.3)',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#FFC0CB',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
