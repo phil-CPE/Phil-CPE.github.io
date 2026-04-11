@@ -3,126 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Monitoring | Ina</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Creativity | Ina Portfolio</title>
     <style>
         :root {
-            --dark-pink: #970747;
-            --white: #FFFFFF;
-            --overlay: rgba(0, 0, 0, 0.6); /* Makes text readable over background */
+            --dark: #262626; /* Dark background from layout */
+            --off-white: #f5f5f5;
+            --accent: #FFC0CB; /* Using your pink accent color */
+            --text: #ffffff;
+            --sub-text: rgba(255, 255, 255, 0.7);
         }
         body {
-            /* Replace 'phil-portfolio2.png' with your actual filename extension if it's .jpg */
-            background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('phil-portfolio2.png') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--white);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--off-white);
+            color: var(--dark);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 3rem 1.5rem;
         }
-        .main-title {
-            font-size: 3.5rem;
-            color: var(--white);
-            background-color: var(--dark-pink);
-            padding: 10px 30px;
-            border-radius: 10px;
+        /* MAIN CONTAINERS */
+        .landing-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+        .main-container {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            background-color: var(--dark);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            display: flex;
+            justify-content: center; /* Centering the header text at top of wrapper */
+            margin-bottom: 2rem;
+        }
+        .landing-template {
+            font-size: 1.5rem;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            color: var(--dark);
+            font-weight: bold;
         }
-        .container {
-            text-align: center;
+        .landing-template span { display: block; font-size: 1.1rem; color: var(--accent); }
+
+        nav.top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .site-logo { font-size: 1.5rem; color: var(--text); }
+        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .login-btn { text-decoration: none; border: 1px solid var(--text); color: var(--text); padding: 0.5rem 1.5rem; border-radius: 5px; text-transform: uppercase; }
+
+        /* LEFT CONTENT SECTION */
+        .content-section {
+            padding: 5rem 6rem;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero-title {
+            font-size: 5rem;
+            margin: 0;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            font-weight: 900;
+        }
+        .hero-title span.grad { background: linear-gradient(90deg, #FFC0CB, #64ffda); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-sub { font-size: 1rem; color: var(--sub-text); max-width: 500px; line-height: 1.7; margin-bottom: 3rem; }
+        .ticket-btn { text-decoration: none; border: 1px solid var(--accent); color: var(--accent); padding: 0.8rem 2.5rem; text-transform: uppercase; font-size: 0.9rem; border-radius: 5px; transition: background 0.2s; align-self: flex-start; }
+        .ticket-btn:hover { background: var(--accent); color: var(--dark); }
+
+        /* RIGHT IMAGE SECTION (Currently using letters/placeholders) */
+        .image-section {
+            background-color: var(--off-white);
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 2rem;
-            border: 4px solid var(--dark-pink);
-            border-radius: 20px;
-            background: rgba(151, 7, 71, 0.2); /* Transparent dark pink */
-            backdrop-filter: blur(8px);
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 2rem;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            position: relative;
         }
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--white);
-            margin-bottom: 1rem;
+        .right-text { font-size: 2.5rem; font-weight: bold; text-align: center; color: rgba(0,0,0,0.3); }
+
+        /* FOOTER & SOCIALS */
+        footer.landing-footer {
+            grid-column: span 2;
+            padding: 1.5rem 6rem;
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        h2 { font-size: 2.2rem; margin: 0; color: var(--white); }
-        .about { 
-            color: var(--white); 
-            line-height: 1.6; 
-            margin: 1.2rem 0; 
-            font-size: 1.2rem; 
-            font-weight: 800;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .graph-container {
-            width: 100%;
-            max-width: 550px;
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 5px solid var(--dark-pink);
-        }
-        @media (max-width: 600px) {
-            .main-title { font-size: 1.8rem; }
+        .social-links { display: flex; gap: 1.5rem; margin: 0; padding: 0; }
+        .social-links a { text-decoration: none; color: var(--sub-text); font-size: 1.2rem; }
+
+        /* RESPONSIVE LAYOUT */
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 100%; }
+            .content-section, .image-section { padding: 3rem; border-radius: 20px; }
+            .hero-title { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <h1 class="main-title">ENERGY MONITORING</h1>
+    <div class="landing-wrapper">
+        <header>
+            <div class="landing-template">LANDING PAGE TEMPLATE<span>Creativity</span></div>
+        </header>
 
-    <div class="container">
-        <img src="phil-portfolio.png" alt="Profile photo" class="profile-pic">
-        <h2>Hi, I'm Ina</h2>
-        <p class="about">TEST TEST TEST ENERGY GAP GAPGAP</p>
+        <div class="main-container">
+            <nav class="top-nav">
+                <div class="site-logo">⦿</div> <ul class="nav-links">
+                    <li><a href="#">HOME</a></li>
+                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="#">GALLERY</a></li>
+                    <li><a href="#">EVENT</a></li>
+                    <li><a href="#">CONTACT</a></li>
+                </ul>
+                <a href="#" class="login-btn">LOGING</a>
+            </nav>
+
+            <div class="content-section">
+                <h1 class="hero-title">
+                    Creativity<br>
+                    <span class="grad">never ends</span>
+                </h1 class="hero-sub">
+                <p>Focused on <span class="highlight">Predictive Maintenance</span>, FPGA (Cyclone IV), and embedded systems.</p>
+                <a href="https://github.com/Phil-CPE?tab=repositories" class="ticket-btn">Thesis Data</a>
+            </div>
+
+            <div class="image-section">
+                <div class="right-text">
+                    Main image placeholder<br>
+                    <span>(letters for now)</span>
+                </div>
+            </div>
+
+            <footer class="landing-footer">
+                <div class="social-links">
+                    <a href="#">🐦</a> <a href="#">𝑓</a>
+                    <a href="#">📸</a>
+                </div>
+            </footer>
+        </div>
     </div>
-
-    <div class="graph-container">
-        <h3 style="color: #970747; text-align: center; margin-top: 0; font-weight: bold;">LIVE PERFORMANCE TRACKING</h3>
-        <canvas id="myChart"></canvas>
-    </div>
-
-    <script>
-        const ctx = document.getElementById('myChart');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Energy Levels',
-                    data: [15, 25, 10, 30, 18, 45, 35],
-                    borderColor: '#970747',
-                    backgroundColor: 'rgba(151, 7, 71, 0.1)',
-                    borderWidth: 5,
-                    pointBackgroundColor: '#970747',
-                    pointRadius: 6,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { labels: { color: '#970747', font: { weight: 'bold' } } }
-                },
-                scales: {
-                    y: { ticks: { color: '#970747' }, beginAtZero: true },
-                    x: { ticks: { color: '#970747' } }
-                }
-            }
-        });
-    </script>
 
 </body>
 </html>
