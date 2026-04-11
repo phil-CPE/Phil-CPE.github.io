@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Energy Monitoring | Ina & Aljun</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --dark: #1a1a1a; 
@@ -32,7 +33,7 @@
         .main-container {
             background-color: var(--dark);
             border-radius: 20px;
-            min-height: 600px;
+            min-height: 650px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -40,7 +41,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* NAVIGATION - CLEANED UP */
+        /* NAVIGATION */
         nav {
             display: flex;
             justify-content: space-between;
@@ -51,20 +52,40 @@
         .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
         .nav-links a { text-decoration: none; color: var(--text); font-size: 0.8rem; letter-spacing: 1px; }
 
+        /* LINKING BUTTON */
+        .link-btn { 
+            text-decoration: none; 
+            border: 1px solid var(--accent-pink); 
+            color: var(--accent-pink); 
+            padding: 0.6rem 1.8rem; 
+            border-radius: 5px; 
+            font-size: 0.8rem;
+            transition: 0.3s;
+            cursor: pointer;
+            background: transparent;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .link-btn:hover {
+            background: var(--accent-pink);
+            color: var(--dark);
+            box-shadow: 0 0 15px var(--accent-pink);
+        }
+
         /* HERO CONTENT */
         .hero-section {
             display: flex;
-            flex-grow: 1;
             padding: 0 5rem;
             align-items: center;
             justify-content: flex-end; 
+            margin-bottom: 20px;
         }
         .hero-content {
             text-align: right;
             max-width: 500px;
         }
         .hero-title {
-            font-size: 5.5rem;
+            font-size: 5rem;
             margin: 0;
             line-height: 0.9;
             font-weight: 900;
@@ -75,55 +96,39 @@
         .hero-title span.blue { color: var(--accent-blue); }
         
         .names-sub {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             color: var(--text);
             font-size: 1.1rem;
             letter-spacing: 0.5px;
         }
 
-        /* ESP LINK BUTTON */
-        .esp-link-btn {
-            display: inline-block;
-            margin-top: 1.5rem;
-            text-decoration: none;
-            background-color: var(--accent-pink);
-            color: var(--dark);
-            padding: 0.8rem 2.5rem;
-            font-size: 0.9rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 4px;
-            transition: 0.3s ease;
-        }
-        .esp-link-btn:hover {
-            background-color: var(--accent-blue);
-            transform: translateY(-2px);
-        }
-
-        /* IMAGE / DATA PLACEHOLDER */
-        .image-placeholder {
-            background: #e0e0e0;
+        /* GRAPH AREA */
+        .graph-area {
+            background: #ffffff;
             margin: 0 5rem 3rem 3rem;
-            height: 200px;
-            width: 50%;
+            height: 280px;
+            width: 55%;
             border-radius: 20px;
+            padding: 20px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            color: #333;
-            font-weight: bold;
-            text-align: center;
         }
-        #live-data {
-            font-size: 2.5rem;
-            color: var(--dark);
-            margin-top: 10px;
+        .graph-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            color: #333;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
         /* FOOTER */
         footer {
-            padding: 1.5rem;
+            padding: 1rem;
             display: flex;
             justify-content: center;
             gap: 2rem;
@@ -145,7 +150,8 @@
                     <li><a href="#">EVENT</a></li>
                     <li><a href="#">CONTACT</a></li>
                 </ul>
-                </nav>
+                <a href="http://192.168.1.100" class="link-btn" id="esp-link">LINKING....</a>
+            </nav>
 
             <div class="hero-section">
                 <div class="hero-content">
@@ -154,13 +160,15 @@
                         <span class="pink">Monitor</span><span class="blue">ing</span>
                     </h1>
                     <p class="names-sub">Ina Peromingan and Aljun Dela Peña</p>
-                    <a href="http://192.168.1.100" class="esp-link-btn" id="esp-link">LINK TO ESP</a>
                 </div>
             </div>
 
-            <div class="image-placeholder">
-                <div style="font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Live Reading</div>
-                <div id="live-data">0.00 W</div>
+            <div class="graph-area">
+                <div class="graph-header">
+                    <span>ESP Real-time Data</span>
+                    <span id="live-power" style="color: #FFC0CB;">0.00 W</span>
+                </div>
+                <canvas id="energyChart"></canvas>
             </div>
 
             <footer>
@@ -172,25 +180,56 @@
     </div>
 
     <script>
-        // 1. Simulating real-time data from your ESP
-        const dataDisplay = document.getElementById('live-data');
+        // Graph Configuration
+        const ctx = document.getElementById('energyChart').getContext('2d');
+        let chartData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         
-        function updateEnergyReading() {
-            // This is where you would normally use fetch('http://your-esp-ip/data')
-            // For now, let's simulate a shifting power reading
-            const simulatedPower = (Math.random() * (250 - 220) + 220).toFixed(2);
-            dataDisplay.innerText = `${simulatedPower} W`;
-        }
-
-        // Update the reading every 2 seconds
-        setInterval(updateEnergyReading, 2000);
-
-        // 2. Button Link handling
-        // Make sure to replace the IP address in the HTML with your actual ESP IP
-        const espBtn = document.getElementById('esp-link');
-        espBtn.addEventListener('click', function(e) {
-            console.log("Attempting to connect to ESP hardware...");
+        const energyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['', '', '', '', '', '', '', '', '', ''],
+                datasets: [{
+                    label: 'Power (Watts)',
+                    data: chartData,
+                    borderColor: '#FFC0CB',
+                    backgroundColor: 'rgba(255, 192, 203, 0.2)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
         });
+
+        // Function to simulate real-time ESP syncing
+        const livePowerText = document.getElementById('live-power');
+        const linkBtn = document.getElementById('esp-link');
+
+        linkBtn.addEventListener('click', () => {
+            linkBtn.innerText = "CONNECTED";
+            linkBtn.style.borderColor = "#64ffda";
+            linkBtn.style.color = "#64ffda";
+        });
+
+        setInterval(() => {
+            const newVal = (Math.random() * (240 - 210) + 210).toFixed(2);
+            livePowerText.innerText = `${newVal} W`;
+            
+            // Update Graph
+            chartData.push(newVal);
+            chartData.shift();
+            energyChart.update();
+        }, 1500);
     </script>
+
 </body>
 </html>
