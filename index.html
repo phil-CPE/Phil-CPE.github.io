@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Monitoring | Horizontal UI</title>
+    <title>Energy Monitoring | Ina & Aljun</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -16,7 +16,7 @@
         body {
             background-color: #000;
             color: var(--white);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -24,41 +24,56 @@
             overflow: hidden;
         }
 
-        /* LINKING BUTTON */
-        .linking-link {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: var(--pink);
-            font-weight: bold;
-            text-decoration: none;
-            border: 1px solid var(--pink);
-            padding: 8px 15px;
-            border-radius: 5px;
-            z-index: 1000;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         /* TOP SECTION */
         .top-content {
-            height: 30vh;
+            height: 35vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 3rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0 4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .top-content h1 { font-size: 2.5rem; margin: 0; color: var(--pink); text-transform: uppercase; }
-        .top-content h2 { font-size: 1rem; color: var(--teal); margin: 5px 0; }
+        .top-content h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: var(--pink);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+        .top-content h2 {
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin: 10px 0;
+            color: var(--teal);
+            letter-spacing: 2px;
+        }
+        .top-content p {
+            max-width: 600px;
+            color: #aaa;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
 
-        /* HORIZONTAL SLIDING ROWS */
+        /* LINKING BUTTON (Fixed at top right) */
+        .linking-status {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: var(--pink);
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            border: 1px solid var(--pink);
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        /* HORIZONTAL ROOMS */
         .rooms-container {
             display: flex;
             flex-direction: column;
-            height: 70vh;
+            height: 65vh;
             width: 100%;
         }
 
@@ -66,59 +81,65 @@
             flex: 1;
             display: flex;
             align-items: center;
-            padding: 0 3rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 0 4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             overflow: hidden;
             position: relative;
             cursor: pointer;
         }
 
+        /* Expand row on hover */
         .room-row:hover {
-            flex: 4; /* This makes the row taller when you hover */
+            flex: 3;
             background: rgba(255, 255, 255, 0.03);
         }
 
         .room-label {
             font-size: 2rem;
             font-weight: 900;
-            min-width: 200px;
+            text-transform: uppercase;
+            min-width: 250px;
             transition: 0.3s;
         }
 
-        /* GRAPH CONTENT - Now fits better horizontally */
-        .graph-wrapper {
+        /* DATA WRAPPER */
+        .data-wrapper {
             flex-grow: 1;
-            height: 80%;
             display: flex;
             align-items: center;
-            gap: 30px;
+            justify-content: flex-end;
+            gap: 40px;
             opacity: 0;
-            transform: translateX(20px);
-            transition: 0.4s 0.1s;
+            transform: translateY(10px);
+            transition: 0.4s 0.1s; /* Delayed fade in */
         }
 
-        .room-row:hover .graph-wrapper {
+        .room-row:hover .data-wrapper {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
 
-        .canvas-container {
-            flex-grow: 1;
-            height: 100%;
-            background: rgba(255,255,255,0.95);
+        /* GRAPH CONTAINER */
+        .graph-container {
+            height: 80%;
+            width: 50%;
+            background: rgba(255,255,255, 0.95);
             border-radius: 10px;
             padding: 10px;
+            box-sizing: border-box;
         }
 
+        /* POWER DISPLAY */
         .power-display {
-            min-width: 150px;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
+            letter-spacing: -2px;
+            min-width: 180px;
             text-align: right;
         }
 
-        /* BORDERS */
+        /* DOOR BORDERS */
         #row1 { border-left: 8px solid var(--pink); }
         #row2 { border-left: 8px solid var(--teal); }
         #row3 { border-left: 8px solid var(--gold); }
@@ -126,89 +147,100 @@
 </head>
 <body>
 
-    <a href="#" class="linking-link" id="start-btn">
-        <div id="dot" style="width:8px; height:8px; background:var(--pink); border-radius:50%;"></div>
-        <span id="txt">LINKING...</span>
-    </a>
+    <div class="linking-status">LINKING...</div>
 
     <div class="top-content">
         <h1>Energy Monitoring System</h1>
         <h2>Ina Peromingan & Aljun Dela Peña</h2>
-        <p style="opacity: 0.6; max-width: 600px; font-size: 0.9rem;">Hover over a room to expand the live energy analysis and check hardware outcomes.</p>
+        <p>This dashboard provides real-time power analysis. Hover over a room row to expand the live energy graph and hardware performance metrics.</p>
     </div>
 
     <div class="rooms-container">
         <div class="room-row" id="row1">
-            <div class="room-label" style="color: var(--pink);">ROOM 1</div>
-            <div class="graph-wrapper">
-                <div class="canvas-container"><canvas id="c1"></canvas></div>
-                <div class="power-display" id="v1" style="color: var(--pink);">0.00 W</div>
+            <div class="room-label" style="color: var(--pink);">Room 1</div>
+            <div class="data-wrapper">
+                <div class="graph-container">
+                    <canvas id="chart1"></canvas>
+                </div>
+                <div class="power-display" id="val1" style="color: var(--pink);">0.00 W</div>
             </div>
         </div>
 
         <div class="room-row" id="row2">
-            <div class="room-label" style="color: var(--teal);">ROOM 2</div>
-            <div class="graph-wrapper">
-                <div class="canvas-container"><canvas id="c2"></canvas></div>
-                <div class="power-display" id="v2" style="color: var(--teal);">0.00 W</div>
+            <div class="room-label" style="color: var(--teal);">Room 2</div>
+            <div class="data-wrapper">
+                <div class="graph-container">
+                    <canvas id="chart2"></canvas>
+                </div>
+                <div class="power-display" id="val2" style="color: var(--teal);">0.00 W</div>
             </div>
         </div>
 
         <div class="room-row" id="row3">
-            <div class="room-label" style="color: var(--gold);">ROOM 3</div>
-            <div class="graph-wrapper">
-                <div class="canvas-container"><canvas id="c3"></canvas></div>
-                <div class="power-display" id="v3" style="color: var(--gold);">0.00 W</div>
+            <div class="room-label" style="color: var(--gold);">Room 3</div>
+            <div class="data-wrapper">
+                <div class="graph-container">
+                    <canvas id="chart3"></canvas>
+                </div>
+                <div class="power-display" id="val3" style="color: var(--gold);">0.00 W</div>
             </div>
         </div>
     </div>
 
     <script>
+        // Chart Configuration
         const colors = { 1: '#FFC0CB', 2: '#64ffda', 3: '#FFD700' };
         const charts = {};
-        let active = false;
 
-        function makeChart(id, color) {
-            return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
+        function createChart(id, color) {
+            const ctx = document.getElementById(`chart${id}`).getContext('2d');
+            return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array(15).fill(''),
+                    labels: ['', '', '', '', '', '', '', '', '', ''],
                     datasets: [{
-                        data: Array(15).fill(0),
+                        data: Array(10).fill(0),
                         borderColor: color,
                         backgroundColor: color + '22',
-                        borderWidth: 3, tension: 0.4, fill: true, pointRadius: 0
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0
                     }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { y: { display: false, min: 0, max: 400 }, x: { display: false } },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { display: false }, x: { display: false } },
                     plugins: { legend: { display: false } }
                 }
             });
         }
 
-        for(let i=1; i<=3; i++) charts[i] = makeChart(i, colors[i]);
+        // Initialize all 3 charts
+        for(let i=1; i<=3; i++) {
+            charts[i] = createChart(i, colors[i]);
+        }
 
-        const start = document.getElementById('start-btn');
-        start.addEventListener('click', (e) => {
-            e.preventDefault();
-            active = true;
-            document.getElementById('txt').innerText = "CONNECTED";
-            document.getElementById('dot').style.background = "var(--teal)";
-            start.style.borderColor = "var(--teal)";
-            start.style.color = "var(--teal)";
-        });
-
+        // Live Data Simulation
         setInterval(() => {
-            if(!active) return;
-            const ranges = { 1: [210, 230], 2: [150, 170], 3: [310, 340] };
+            // Room 1: 210-230W
+            const val1 = (Math.random() * (230 - 210) + 210).toFixed(2);
+            // Room 2: 140-160W
+            const val2 = (Math.random() * (160 - 140) + 140).toFixed(2);
+            // Room 3: 300-340W
+            const val3 = (Math.random() * (340 - 300) + 300).toFixed(2);
+
+            const vals = { 1: val1, 2: val2, 3: val3 };
+
             for(let i=1; i<=3; i++) {
-                const val = (Math.random() * (ranges[i][1] - ranges[i][0]) + ranges[i][0]).toFixed(2);
-                document.getElementById(`v${i}`).innerText = `${val} W`;
-                charts[i].data.datasets[0].data.push(val);
+                // Update live text
+                document.getElementById(`val${i}`).innerText = `${vals[i]} W`;
+                
+                // Update Graph
+                charts[i].data.datasets[0].data.push(vals[i]);
                 charts[i].data.datasets[0].data.shift();
-                charts[i].update('none');
+                charts[i].update('none'); // Update without animation for performance
             }
         }, 1000);
     </script>
