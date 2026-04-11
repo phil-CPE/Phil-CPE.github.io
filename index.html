@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Monitoring | Ina & Aljun</title>
+    <title>Energy Monitoring | Toggle System</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -16,7 +16,7 @@
         body {
             background-color: #000;
             color: var(--white);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -24,223 +24,179 @@
             overflow: hidden;
         }
 
+        /* TOGGLE BUTTON STYLING */
+        #status-toggle {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: var(--pink);
+            font-weight: bold;
+            text-decoration: none;
+            border: 1px solid var(--pink);
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: transparent;
+            transition: 0.3s;
+        }
+        #status-toggle.connected {
+            color: var(--teal);
+            border-color: var(--teal);
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--pink);
+            border-radius: 50%;
+        }
+        .active-pulse { animation: pulse 1.5s infinite; background-color: var(--teal); }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.6); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* TOP SECTION */
         .top-content {
-            height: 35vh;
+            height: 30vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 0 4rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .top-content h1 {
-            font-size: 3rem;
-            margin: 0;
-            color: var(--pink);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-        .top-content h2 {
-            font-size: 1.1rem;
-            font-weight: 300;
-            margin: 10px 0;
-            color: var(--teal);
-            letter-spacing: 2px;
-        }
-        .top-content p {
-            max-width: 600px;
-            color: #aaa;
-            line-height: 1.6;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
+        .top-content h1 { font-size: 2.8rem; margin: 0; color: var(--pink); text-transform: uppercase; letter-spacing: 4px; }
+        .top-content h2 { font-size: 1.1rem; color: var(--teal); margin: 5px 0; }
 
-        /* LINKING BUTTON (Fixed at top right) */
-        .linking-status {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            color: var(--pink);
-            font-weight: bold;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            border: 1px solid var(--pink);
-            padding: 8px 15px;
-            border-radius: 5px;
-        }
-
-        /* HORIZONTAL ROOMS */
-        .rooms-container {
-            display: flex;
-            flex-direction: column;
-            height: 65vh;
-            width: 100%;
-        }
-
+        /* ROOM ROWS */
+        .rooms-container { display: flex; flex-direction: column; height: 70vh; }
         .room-row {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            padding: 0 4rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex: 1; display: flex; align-items: center; padding: 0 4rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
+            overflow: hidden; cursor: pointer;
         }
+        .room-row:hover { flex: 4; background: rgba(255, 255, 255, 0.03); }
+        .room-label { font-size: 2rem; font-weight: 900; min-width: 250px; }
 
-        /* Expand row on hover */
-        .room-row:hover {
-            flex: 3;
-            background: rgba(255, 255, 255, 0.03);
+        .data-area {
+            flex-grow: 1; height: 80%; display: flex; align-items: center;
+            gap: 40px; opacity: 0; transform: translateX(30px); transition: 0.4s;
         }
+        .room-row:hover .data-area { opacity: 1; transform: translateX(0); }
+        .canvas-box { flex-grow: 1; height: 100%; background: #eee; border-radius: 10px; padding: 10px; }
+        .power-txt { min-width: 180px; font-size: 2.8rem; font-weight: bold; text-align: right; }
 
-        .room-label {
-            font-size: 2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            min-width: 250px;
-            transition: 0.3s;
-        }
-
-        /* DATA WRAPPER */
-        .data-wrapper {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 40px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: 0.4s 0.1s; /* Delayed fade in */
-        }
-
-        .room-row:hover .data-wrapper {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* GRAPH CONTAINER */
-        .graph-container {
-            height: 80%;
-            width: 50%;
-            background: rgba(255,255,255, 0.95);
-            border-radius: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-
-        /* POWER DISPLAY */
-        .power-display {
-            font-size: 3rem;
-            font-weight: bold;
-            letter-spacing: -2px;
-            min-width: 180px;
-            text-align: right;
-        }
-
-        /* DOOR BORDERS */
-        #row1 { border-left: 8px solid var(--pink); }
-        #row2 { border-left: 8px solid var(--teal); }
-        #row3 { border-left: 8px solid var(--gold); }
+        #r1 { border-left: 8px solid var(--pink); }
+        #r2 { border-left: 8px solid var(--teal); }
+        #r3 { border-left: 8px solid var(--gold); }
     </style>
 </head>
 <body>
 
-    <div class="linking-status">LINKING...</div>
+    <button id="status-toggle">
+        <div id="dot" class="pulse-dot"></div>
+        <span id="label">LINKING...</span>
+    </button>
 
     <div class="top-content">
         <h1>Energy Monitoring System</h1>
         <h2>Ina Peromingan & Aljun Dela Peña</h2>
-        <p>This dashboard provides real-time power analysis. Hover over a room row to expand the live energy graph and hardware performance metrics.</p>
+        <p style="opacity: 0.6; max-width: 600px;">Click the status button to start/stop the ESP data synchronization across all rooms.</p>
     </div>
 
     <div class="rooms-container">
-        <div class="room-row" id="row1">
-            <div class="room-label" style="color: var(--pink);">Room 1</div>
-            <div class="data-wrapper">
-                <div class="graph-container">
-                    <canvas id="chart1"></canvas>
-                </div>
-                <div class="power-display" id="val1" style="color: var(--pink);">0.00 W</div>
+        <div class="room-row" id="r1">
+            <div class="room-label" style="color: var(--pink);">ROOM 1</div>
+            <div class="data-area">
+                <div class="canvas-box"><canvas id="c1"></canvas></div>
+                <div class="power-txt" id="v1" style="color: var(--pink);">0.00 W</div>
             </div>
         </div>
-
-        <div class="room-row" id="row2">
-            <div class="room-label" style="color: var(--teal);">Room 2</div>
-            <div class="data-wrapper">
-                <div class="graph-container">
-                    <canvas id="chart2"></canvas>
-                </div>
-                <div class="power-display" id="val2" style="color: var(--teal);">0.00 W</div>
+        <div class="room-row" id="r2">
+            <div class="room-label" style="color: var(--teal);">ROOM 2</div>
+            <div class="data-area">
+                <div class="canvas-box"><canvas id="c2"></canvas></div>
+                <div class="power-txt" id="v2" style="color: var(--teal);">0.00 W</div>
             </div>
         </div>
-
-        <div class="room-row" id="row3">
-            <div class="room-label" style="color: var(--gold);">Room 3</div>
-            <div class="data-wrapper">
-                <div class="graph-container">
-                    <canvas id="chart3"></canvas>
-                </div>
-                <div class="power-display" id="val3" style="color: var(--gold);">0.00 W</div>
+        <div class="room-row" id="r3">
+            <div class="room-label" style="color: var(--gold);">ROOM 3</div>
+            <div class="data-area">
+                <div class="canvas-box"><canvas id="c3"></canvas></div>
+                <div class="power-txt" id="v3" style="color: var(--gold);">0.00 W</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Chart Configuration
-        const colors = { 1: '#FFC0CB', 2: '#64ffda', 3: '#FFD700' };
         const charts = {};
+        const colors = { 1: '#FFC0CB', 2: '#64ffda', 3: '#FFD700' };
+        let isRunning = false;
 
-        function createChart(id, color) {
-            const ctx = document.getElementById(`chart${id}`).getContext('2d');
-            return new Chart(ctx, {
+        function initChart(id, color) {
+            return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: ['', '', '', '', '', '', '', '', '', ''],
+                    labels: Array(15).fill(''),
                     datasets: [{
-                        data: Array(10).fill(0),
+                        data: Array(15).fill(0),
                         borderColor: color,
                         backgroundColor: color + '22',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 0
+                        borderWidth: 3, tension: 0.4, fill: true, pointRadius: 0
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { display: false }, x: { display: false } },
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { display: false, min: 0, max: 400 }, x: { display: false } },
                     plugins: { legend: { display: false } }
                 }
             });
         }
 
-        // Initialize all 3 charts
-        for(let i=1; i<=3; i++) {
-            charts[i] = createChart(i, colors[i]);
-        }
+        for(let i=1; i<=3; i++) charts[i] = initChart(i, colors[i]);
 
-        // Live Data Simulation
-        setInterval(() => {
-            // Room 1: 210-230W
-            const val1 = (Math.random() * (230 - 210) + 210).toFixed(2);
-            // Room 2: 140-160W
-            const val2 = (Math.random() * (160 - 140) + 140).toFixed(2);
-            // Room 3: 300-340W
-            const val3 = (Math.random() * (340 - 300) + 300).toFixed(2);
+        const toggleBtn = document.getElementById('status-toggle');
+        const dot = document.getElementById('dot');
+        const label = document.getElementById('label');
 
-            const vals = { 1: val1, 2: val2, 3: val3 };
-
-            for(let i=1; i<=3; i++) {
-                // Update live text
-                document.getElementById(`val${i}`).innerText = `${vals[i]} W`;
+        toggleBtn.addEventListener('click', () => {
+            isRunning = !isRunning; // Flip the switch
+            
+            if(isRunning) {
+                toggleBtn.classList.add('connected');
+                dot.classList.add('active-pulse');
+                label.innerText = "CONNECTED";
+            } else {
+                toggleBtn.classList.remove('connected');
+                dot.classList.remove('active-pulse');
+                label.innerText = "LINKING...";
                 
-                // Update Graph
-                charts[i].data.datasets[0].data.push(vals[i]);
+                // Reset display back to 0
+                for(let i=1; i<=3; i++) {
+                    document.getElementById(`v${i}`).innerText = "0.00 W";
+                    charts[i].data.datasets[0].data = Array(15).fill(0);
+                    charts[i].update();
+                }
+            }
+        });
+
+        setInterval(() => {
+            if(!isRunning) return;
+            const ranges = { 1: [215, 235], 2: [145, 165], 3: [310, 345] };
+            for(let i=1; i<=3; i++) {
+                const val = (Math.random() * (ranges[i][1] - ranges[i][0]) + ranges[i][0]).toFixed(2);
+                document.getElementById(`v${i}`).innerText = `${val} W`;
+                charts[i].data.datasets[0].data.push(val);
                 charts[i].data.datasets[0].data.shift();
-                charts[i].update('none'); // Update without animation for performance
+                charts[i].update('none');
             }
         }, 1000);
     </script>
