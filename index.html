@@ -40,7 +40,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* NAVIGATION */
+        /* NAVIGATION - CLEANED UP */
         nav {
             display: flex;
             justify-content: space-between;
@@ -50,7 +50,6 @@
         .site-logo { color: var(--text); font-size: 1.5rem; }
         .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
         .nav-links a { text-decoration: none; color: var(--text); font-size: 0.8rem; letter-spacing: 1px; }
-        .login-btn { text-decoration: none; border: 1px solid var(--text); color: var(--text); padding: 0.6rem 1.8rem; border-radius: 5px; font-size: 0.8rem; }
 
         /* HERO CONTENT */
         .hero-section {
@@ -58,7 +57,7 @@
             flex-grow: 1;
             padding: 0 5rem;
             align-items: center;
-            justify-content: flex-end; /* Matches the layout in your image */
+            justify-content: flex-end; 
         }
         .hero-content {
             text-align: right;
@@ -81,18 +80,27 @@
             font-size: 1.1rem;
             letter-spacing: 0.5px;
         }
-        .thesis-btn {
+
+        /* ESP LINK BUTTON */
+        .esp-link-btn {
             display: inline-block;
             margin-top: 1.5rem;
             text-decoration: none;
-            border: 1px solid var(--accent-pink);
-            color: var(--text);
+            background-color: var(--accent-pink);
+            color: var(--dark);
             padding: 0.8rem 2.5rem;
             font-size: 0.9rem;
+            font-weight: bold;
             text-transform: uppercase;
+            border-radius: 4px;
+            transition: 0.3s ease;
+        }
+        .esp-link-btn:hover {
+            background-color: var(--accent-blue);
+            transform: translateY(-2px);
         }
 
-        /* IMAGE PLACEHOLDER */
+        /* IMAGE / DATA PLACEHOLDER */
         .image-placeholder {
             background: #e0e0e0;
             margin: 0 5rem 3rem 3rem;
@@ -100,17 +108,22 @@
             width: 50%;
             border-radius: 20px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #999;
+            color: #333;
             font-weight: bold;
-            font-size: 2rem;
             text-align: center;
         }
+        #live-data {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-top: 10px;
+        }
 
-        /* FOOTER SOCIALS */
+        /* FOOTER */
         footer {
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: center;
             gap: 2rem;
@@ -132,8 +145,7 @@
                     <li><a href="#">EVENT</a></li>
                     <li><a href="#">CONTACT</a></li>
                 </ul>
-                <a href="#" class="login-btn">LOGING</a>
-            </nav>
+                </nav>
 
             <div class="hero-section">
                 <div class="hero-content">
@@ -142,13 +154,13 @@
                         <span class="pink">Monitor</span><span class="blue">ing</span>
                     </h1>
                     <p class="names-sub">Ina Peromingan and Aljun Dela Peña</p>
-                    <a href="https://github.com/Phil-CPE?tab=repositories" class="thesis-btn">THESIS DATA</a>
+                    <a href="http://192.168.1.100" class="esp-link-btn" id="esp-link">LINK TO ESP</a>
                 </div>
             </div>
 
             <div class="image-placeholder">
-                Main image placeholder<br>
-                (letters for now)
+                <div style="font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">Live Reading</div>
+                <div id="live-data">0.00 W</div>
             </div>
 
             <footer>
@@ -159,5 +171,26 @@
         </div>
     </div>
 
+    <script>
+        // 1. Simulating real-time data from your ESP
+        const dataDisplay = document.getElementById('live-data');
+        
+        function updateEnergyReading() {
+            // This is where you would normally use fetch('http://your-esp-ip/data')
+            // For now, let's simulate a shifting power reading
+            const simulatedPower = (Math.random() * (250 - 220) + 220).toFixed(2);
+            dataDisplay.innerText = `${simulatedPower} W`;
+        }
+
+        // Update the reading every 2 seconds
+        setInterval(updateEnergyReading, 2000);
+
+        // 2. Button Link handling
+        // Make sure to replace the IP address in the HTML with your actual ESP IP
+        const espBtn = document.getElementById('esp-link');
+        espBtn.addEventListener('click', function(e) {
+            console.log("Attempting to connect to ESP hardware...");
+        });
+    </script>
 </body>
 </html>
