@@ -8,32 +8,25 @@
     <style>
         :root {
             --dark: #1a1a1a; 
-            --off-white: #f5f5f5;
             --accent-pink: #FFC0CB;
             --accent-blue: #64ffda;
             --text: #ffffff;
-            --sub-text: rgba(255, 255, 255, 0.7);
         }
         body {
-            background-color: var(--off-white);
+            background-color: #f5f5f5;
             color: var(--dark);
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
-        .landing-wrapper {
-            width: 100%;
-            max-width: 1200px;
-            padding: 2rem;
-        }
         .main-container {
             background-color: var(--dark);
             border-radius: 20px;
-            min-height: 650px;
+            width: 1200px;
+            height: 650px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -41,159 +34,131 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* NAVIGATION */
+        /* NAVIGATION - ROOMS */
         nav {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 2rem 3rem;
+            position: relative;
         }
-        .site-logo { color: var(--text); font-size: 1.5rem; }
-        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.8rem; letter-spacing: 1px; }
-
-        /* LINKING BUTTON */
-        .link-btn { 
+        .site-logo { position: absolute; left: 3rem; color: var(--text); font-size: 1.5rem; }
+        .nav-links { list-style: none; display: flex; gap: 3rem; margin: 0; padding: 0; }
+        .nav-links li a { 
             text-decoration: none; 
+            color: var(--text); 
+            font-size: 1rem; 
+            letter-spacing: 2px; 
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .nav-links li a:hover { color: var(--accent-pink); transform: scale(1.1); }
+        .active-room { color: var(--accent-blue) !important; }
+
+        .link-btn { 
+            position: absolute; right: 3rem;
             border: 1px solid var(--accent-pink); 
             color: var(--accent-pink); 
             padding: 0.6rem 1.8rem; 
             border-radius: 5px; 
             font-size: 0.8rem;
-            transition: 0.3s;
-            cursor: pointer;
-            background: transparent;
             font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .link-btn:hover {
-            background: var(--accent-pink);
-            color: var(--dark);
-            box-shadow: 0 0 15px var(--accent-pink);
         }
 
         /* HERO CONTENT */
         .hero-section {
             display: flex;
             padding: 0 5rem;
-            align-items: center;
             justify-content: flex-end; 
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
-        .hero-content {
-            text-align: right;
-            max-width: 500px;
-        }
+        .hero-content { text-align: right; }
         .hero-title {
             font-size: 5rem;
             margin: 0;
             line-height: 0.9;
             font-weight: 900;
             color: var(--text);
-            text-transform: capitalize;
         }
         .hero-title span.pink { color: var(--accent-pink); }
         .hero-title span.blue { color: var(--accent-blue); }
-        
-        .names-sub {
-            margin-top: 1.5rem;
-            color: var(--text);
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-        }
+        .names-sub { margin-top: 1.5rem; color: var(--text); font-size: 1.1rem; }
 
         /* GRAPH AREA */
         .graph-area {
             background: #ffffff;
-            margin: 0 5rem 3rem 3rem;
-            height: 280px;
+            margin: auto 5rem 4rem 3rem;
+            height: 300px;
             width: 55%;
             border-radius: 20px;
-            padding: 20px;
+            padding: 25px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .graph-header {
-            width: 100%;
             display: flex;
             justify-content: space-between;
             color: #333;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: bold;
             margin-bottom: 10px;
             text-transform: uppercase;
         }
-
-        /* FOOTER */
-        footer {
-            padding: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            background: #111;
-        }
-        footer a { color: var(--sub-text); text-decoration: none; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div class="landing-wrapper">
-        <div class="main-container">
-            <nav>
-                <div class="site-logo">⦿</div>
-                <ul class="nav-links">
-                    <li><a href="#">HOME</a></li>
-                    <li><a href="#">ABOUT</a></li>
-                    <li><a href="#">GALLERY</a></li>
-                    <li><a href="#">EVENT</a></li>
-                    <li><a href="#">CONTACT</a></li>
-                </ul>
-                <a href="http://192.168.1.100" class="link-btn" id="esp-link">LINKING....</a>
-            </nav>
+    <div class="main-container">
+        <nav>
+            <div class="site-logo">⦿</div>
+            <ul class="nav-links">
+                <li><a onmouseover="switchRoom(1)" id="room1">ROOM 1</a></li>
+                <li><a onmouseover="switchRoom(2)" id="room2">ROOM 2</a></li>
+                <li><a onmouseover="switchRoom(3)" id="room3">ROOM 3</a></li>
+            </ul>
+            <div class="link-btn">LINKING....</div>
+        </nav>
 
-            <div class="hero-section">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        Energy<br>
-                        <span class="pink">Monitor</span><span class="blue">ing</span>
-                    </h1>
-                    <p class="names-sub">Ina Peromingan and Aljun Dela Peña</p>
-                </div>
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Energy<br><span class="pink">Monitor</span><span class="blue">ing</span></h1>
+                <p class="names-sub">Ina Peromingan and Aljun Dela Peña</p>
             </div>
+        </div>
 
-            <div class="graph-area">
-                <div class="graph-header">
-                    <span>ESP Real-time Data</span>
-                    <span id="live-power" style="color: #FFC0CB;">0.00 W</span>
-                </div>
-                <canvas id="energyChart"></canvas>
+        <div class="graph-area">
+            <div class="graph-header">
+                <span id="current-room-label">ROOM 1 REAL-TIME DATA</span>
+                <span id="live-power" style="color: #970747; font-size: 1.2rem;">0.00 W</span>
             </div>
-
-            <footer>
-                <a href="#">🐦</a>
-                <a href="#">𝑓</a>
-                <a href="#">📸</a>
-            </footer>
+            <canvas id="energyChart"></canvas>
         </div>
     </div>
 
     <script>
-        // Graph Configuration
         const ctx = document.getElementById('energyChart').getContext('2d');
-        let chartData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const livePowerText = document.getElementById('live-power');
+        const roomLabel = document.getElementById('current-room-label');
         
+        // Data for 3 different ESPs
+        let roomData = {
+            1: { color: '#FFC0CB', values: [210, 215, 212, 220, 218, 215, 222, 225, 220, 218] },
+            2: { color: '#64ffda', values: [150, 155, 148, 160, 158, 152, 155, 150, 153, 155] },
+            3: { color: '#FFD700', values: [310, 305, 315, 320, 312, 308, 315, 310, 318, 322] }
+        };
+
+        let currentActiveRoom = 1;
+
         const energyChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ['', '', '', '', '', '', '', '', '', ''],
                 datasets: [{
-                    label: 'Power (Watts)',
-                    data: chartData,
-                    borderColor: '#FFC0CB',
-                    backgroundColor: 'rgba(255, 192, 203, 0.2)',
-                    borderWidth: 3,
+                    label: 'Watts',
+                    data: roomData[1].values,
+                    borderColor: roomData[1].color,
+                    backgroundColor: 'rgba(255, 192, 203, 0.1)',
+                    borderWidth: 4,
                     tension: 0.4,
                     fill: true,
                     pointRadius: 0
@@ -202,34 +167,47 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, grid: { display: false } },
-                    x: { grid: { display: false } }
-                },
+                scales: { y: { beginAtZero: false }, x: { grid: { display: false } } },
                 plugins: { legend: { display: false } }
             }
         });
 
-        // Function to simulate real-time ESP syncing
-        const livePowerText = document.getElementById('live-power');
-        const linkBtn = document.getElementById('esp-link');
-
-        linkBtn.addEventListener('click', () => {
-            linkBtn.innerText = "CONNECTED";
-            linkBtn.style.borderColor = "#64ffda";
-            linkBtn.style.color = "#64ffda";
-        });
-
-        setInterval(() => {
-            const newVal = (Math.random() * (240 - 210) + 210).toFixed(2);
-            livePowerText.innerText = `${newVal} W`;
+        function switchRoom(roomNum) {
+            currentActiveRoom = roomNum;
+            roomLabel.innerText = `ROOM ${roomNum} REAL-TIME DATA`;
             
-            // Update Graph
-            chartData.push(newVal);
-            chartData.shift();
-            energyChart.update();
-        }, 1500);
-    </script>
+            // Highlight active link
+            document.querySelectorAll('.nav-links li a').forEach(el => el.classList.remove('active-room'));
+            document.getElementById(`room${roomNum}`).classList.add('active-room');
 
+            // Update Graph Style
+            energyChart.data.datasets[0].data = roomData[roomNum].values;
+            energyChart.data.datasets[0].borderColor = roomData[roomNum].color;
+            energyChart.update();
+        }
+
+        // Simulate 3 Different ESP streams
+        setInterval(() => {
+            // Room 1: 210-230W
+            roomData[1].values.push((Math.random() * 20 + 210).toFixed(2));
+            // Room 2: 140-160W
+            roomData[2].values.push((Math.random() * 20 + 140).toFixed(2));
+            // Room 3: 300-330W
+            roomData[3].values.push((Math.random() * 30 + 300).toFixed(2));
+
+            for (let i = 1; i <= 3; i++) {
+                roomData[i].values.shift();
+            }
+
+            // Update live text for whatever room mouse is on
+            const currentVal = roomData[currentActiveRoom].values[9];
+            livePowerText.innerText = `${currentVal} W`;
+            livePowerText.style.color = roomData[currentActiveRoom].color;
+            energyChart.update();
+        }, 1000);
+
+        // Set Room 1 as default active
+        switchRoom(1);
+    </script>
 </body>
 </html>
