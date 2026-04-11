@@ -3,188 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ina | Energy Monitoring</title>
+    <title>Energy Monitoring | Ina & Aljun</title>
     <style>
         :root {
-            --bg-black: #000000;
-            --card-bg: #111111;
-            --pink-accent: #970747;
-            --text-white: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.6);
+            --dark: #1a1a1a; 
+            --off-white: #f5f5f5;
+            --accent-pink: #FFC0CB;
+            --accent-blue: #64ffda;
+            --text: #ffffff;
+            --sub-text: rgba(255, 255, 255, 0.7);
         }
         body {
-            background-color: var(--bg-black);
-            color: var(--text-white);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--off-white);
+            color: var(--dark);
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        /* MAIN WRAPPER */
-        .portfolio-frame {
-            width: 90%;
+        .landing-wrapper {
+            width: 100%;
             max-width: 1200px;
-            background-color: var(--card-bg);
-            border: 1px solid rgba(151, 7, 71, 0.3);
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            padding: 2rem;
+        }
+        .main-container {
+            background-color: var(--dark);
+            border-radius: 20px;
             min-height: 600px;
             position: relative;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(151, 7, 71, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* NAVIGATION BAR */
+        /* NAVIGATION */
         nav {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2.5rem;
-            box-sizing: border-box;
-            z-index: 10;
+            padding: 2rem 3rem;
         }
-        .logo { font-weight: 900; letter-spacing: 2px; color: var(--pink-accent); font-size: 1.2rem; }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: var(--text-white); font-size: 0.8rem; letter-spacing: 1px; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--pink-accent); }
-        .login-outline { border: 1px solid var(--pink-accent); padding: 0.5rem 1.2rem; border-radius: 4px; color: var(--pink-accent); text-decoration: none; font-size: 0.8rem; }
+        .site-logo { color: var(--text); font-size: 1.5rem; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.8rem; letter-spacing: 1px; }
+        .login-btn { text-decoration: none; border: 1px solid var(--text); color: var(--text); padding: 0.6rem 1.8rem; border-radius: 5px; font-size: 0.8rem; }
 
-        /* LEFT CONTENT */
-        .content-area {
-            padding: 6rem 4rem 4rem 4rem;
+        /* HERO CONTENT */
+        .hero-section {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-grow: 1;
+            padding: 0 5rem;
+            align-items: center;
+            justify-content: flex-end; /* Matches the layout in your image */
         }
-        .hero-text {
-            font-size: 4.5rem;
-            line-height: 0.9;
+        .hero-content {
+            text-align: right;
+            max-width: 500px;
+        }
+        .hero-title {
+            font-size: 5.5rem;
             margin: 0;
-            font-weight: 800;
-            text-transform: uppercase;
+            line-height: 0.9;
+            font-weight: 900;
+            color: var(--text);
+            text-transform: capitalize;
         }
-        .hero-text span { color: var(--pink-accent); }
-        .description {
+        .hero-title span.pink { color: var(--accent-pink); }
+        .hero-title span.blue { color: var(--accent-blue); }
+        
+        .names-sub {
             margin-top: 2rem;
-            color: var(--text-dim);
-            max-width: 400px;
-            line-height: 1.6;
-            font-size: 0.95rem;
+            color: var(--text);
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
         }
-        .btn-action {
-            margin-top: 3rem;
-            align-self: flex-start;
-            border: 1px solid var(--white);
-            padding: 1rem 2.5rem;
-            color: var(--text-white);
+        .thesis-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
             text-decoration: none;
+            border: 1px solid var(--accent-pink);
+            color: var(--text);
+            padding: 0.8rem 2.5rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            border: 1px solid var(--text-white);
-            transition: all 0.3s;
-        }
-        .btn-action:hover {
-            background-color: var(--pink-accent);
-            border-color: var(--pink-accent);
         }
 
-        /* RIGHT VISUAL AREA */
-        .visual-area {
-            background: linear-gradient(45deg, #111111 0%, #1a1a1a 100%);
+        /* IMAGE PLACEHOLDER */
+        .image-placeholder {
+            background: #e0e0e0;
+            margin: 0 5rem 3rem 3rem;
+            height: 200px;
+            width: 50%;
+            border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            border-left: 1px solid rgba(151, 7, 71, 0.2);
-        }
-        .visual-placeholder {
-            text-align: center;
-            border: 2px dashed var(--pink-accent);
-            padding: 3rem;
-            color: var(--pink-accent);
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            color: #999;
             font-weight: bold;
-            opacity: 0.5;
-        }
-        .date-stamp {
-            position: absolute;
-            right: 40px;
-            bottom: 40px;
-            writing-mode: vertical-rl;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            letter-spacing: 2px;
+            font-size: 2rem;
+            text-align: center;
         }
 
         /* FOOTER SOCIALS */
-        .socials {
-            position: absolute;
-            bottom: 30px;
-            left: 4rem;
+        footer {
+            padding: 1rem;
             display: flex;
-            gap: 1.5rem;
+            justify-content: center;
+            gap: 2rem;
+            background: #111;
         }
-        .socials a { color: var(--text-dim); text-decoration: none; font-size: 1rem; transition: color 0.3s; }
-        .socials a:hover { color: var(--pink-accent); }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .portfolio-frame { grid-template-columns: 1fr; }
-            .visual-area { min-height: 300px; border-left: none; border-top: 1px solid rgba(151, 7, 71, 0.2); }
-            .hero-text { font-size: 3rem; }
-        }
+        footer a { color: var(--sub-text); text-decoration: none; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div class="portfolio-frame">
-        <nav>
-            <div class="logo">INA-CPE</div>
-            <div class="nav-links">
-                <a href="#">HOME</a>
-                <a href="#">THESIS</a>
-                <a href="#">GALLERY</a>
-                <a href="#">CONTACT</a>
+    <div class="landing-wrapper">
+        <div class="main-container">
+            <nav>
+                <div class="site-logo">⦿</div>
+                <ul class="nav-links">
+                    <li><a href="#">HOME</a></li>
+                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="#">GALLERY</a></li>
+                    <li><a href="#">EVENT</a></li>
+                    <li><a href="#">CONTACT</a></li>
+                </ul>
+                <a href="#" class="login-btn">LOGING</a>
+            </nav>
+
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Energy<br>
+                        <span class="pink">Monitor</span><span class="blue">ing</span>
+                    </h1>
+                    <p class="names-sub">Ina Peromingan and Aljun Dela Peña</p>
+                    <a href="https://github.com/Phil-CPE?tab=repositories" class="thesis-btn">THESIS DATA</a>
+                </div>
             </div>
-            <a href="#" class="login-outline">LOGIN</a>
-        </nav>
 
-        <div class="content-area">
-            <h1 class="hero-text">
-                Energy<br>
-                <span>Monitoring</span>
-            </h1>
-            <p class="description">
-                TEST TEST TEST ENERGY GAP GAPGAP. <br><br>
-                Focused on <span style="color:white">Predictive Maintenance</span> and FPGA-based motor analysis.
-            </p>
-            <a href="https://github.com/Phil-CPE?tab=repositories" class="btn-action">View Projects</a>
-        </div>
-
-        <div class="visual-area">
-            <div class="visual-placeholder">
-                [ VISUAL DATA ]<br>
-                GRAPH / IMAGE
+            <div class="image-placeholder">
+                Main image placeholder<br>
+                (letters for now)
             </div>
-            <div class="date-stamp">APRIL 2026</div>
-        </div>
 
-        <div class="socials">
-            <a href="#">TW</a>
-            <a href="#">FB</a>
-            <a href="#">IG</a>
+            <footer>
+                <a href="#">🐦</a>
+                <a href="#">𝑓</a>
+                <a href="#">📸</a>
+            </footer>
         </div>
     </div>
 
