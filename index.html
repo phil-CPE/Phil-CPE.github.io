@@ -3,165 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creativity | Ina Portfolio</title>
+    <title>Ina | Energy Monitoring</title>
     <style>
         :root {
-            --dark: #262626; /* Dark background from layout */
-            --off-white: #f5f5f5;
-            --accent: #FFC0CB; /* Using your pink accent color */
-            --text: #ffffff;
-            --sub-text: rgba(255, 255, 255, 0.7);
+            --bg-black: #000000;
+            --card-bg: #111111;
+            --pink-accent: #970747;
+            --text-white: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
         }
         body {
-            background-color: var(--off-white);
-            color: var(--dark);
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        /* MAIN CONTAINERS */
-        .landing-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-        }
-        .main-container {
+
+        /* MAIN WRAPPER */
+        .portfolio-frame {
+            width: 90%;
+            max-width: 1200px;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(151, 7, 71, 0.3);
+            border-radius: 10px;
             display: grid;
-            grid-template-columns: 60% 40%;
-            background-color: var(--dark);
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            overflow: hidden;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
             position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(151, 7, 71, 0.1);
         }
 
-        /* HEADER & NAVIGATION */
-        header {
-            display: flex;
-            justify-content: center; /* Centering the header text at top of wrapper */
-            margin-bottom: 2rem;
-        }
-        .landing-template {
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--dark);
-            font-weight: bold;
-        }
-        .landing-template span { display: block; font-size: 1.1rem; color: var(--accent); }
-
-        nav.top-nav {
+        /* NAVIGATION BAR */
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 3rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2.5rem;
+            box-sizing: border-box;
+            z-index: 10;
         }
-        .site-logo { font-size: 1.5rem; color: var(--text); }
-        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
-        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        .login-btn { text-decoration: none; border: 1px solid var(--text); color: var(--text); padding: 0.5rem 1.5rem; border-radius: 5px; text-transform: uppercase; }
+        .logo { font-weight: 900; letter-spacing: 2px; color: var(--pink-accent); font-size: 1.2rem; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-white); font-size: 0.8rem; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--pink-accent); }
+        .login-outline { border: 1px solid var(--pink-accent); padding: 0.5rem 1.2rem; border-radius: 4px; color: var(--pink-accent); text-decoration: none; font-size: 0.8rem; }
 
-        /* LEFT CONTENT SECTION */
-        .content-section {
-            padding: 5rem 6rem;
-            color: var(--text);
+        /* LEFT CONTENT */
+        .content-area {
+            padding: 6rem 4rem 4rem 4rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        .hero-title {
-            font-size: 5rem;
+        .hero-text {
+            font-size: 4.5rem;
+            line-height: 0.9;
             margin: 0;
-            line-height: 1.1;
-            margin-bottom: 2rem;
-            font-weight: 900;
+            font-weight: 800;
+            text-transform: uppercase;
         }
-        .hero-title span.grad { background: linear-gradient(90deg, #FFC0CB, #64ffda); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-sub { font-size: 1rem; color: var(--sub-text); max-width: 500px; line-height: 1.7; margin-bottom: 3rem; }
-        .ticket-btn { text-decoration: none; border: 1px solid var(--accent); color: var(--accent); padding: 0.8rem 2.5rem; text-transform: uppercase; font-size: 0.9rem; border-radius: 5px; transition: background 0.2s; align-self: flex-start; }
-        .ticket-btn:hover { background: var(--accent); color: var(--dark); }
+        .hero-text span { color: var(--pink-accent); }
+        .description {
+            margin-top: 2rem;
+            color: var(--text-dim);
+            max-width: 400px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .btn-action {
+            margin-top: 3rem;
+            align-self: flex-start;
+            border: 1px solid var(--white);
+            padding: 1rem 2.5rem;
+            color: var(--text-white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            border: 1px solid var(--text-white);
+            transition: all 0.3s;
+        }
+        .btn-action:hover {
+            background-color: var(--pink-accent);
+            border-color: var(--pink-accent);
+        }
 
-        /* RIGHT IMAGE SECTION (Currently using letters/placeholders) */
-        .image-section {
-            background-color: var(--off-white);
-            color: var(--dark);
+        /* RIGHT VISUAL AREA */
+        .visual-area {
+            background: linear-gradient(45deg, #111111 0%, #1a1a1a 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
-            border-top-right-radius: 20px;
-            border-bottom-right-radius: 20px;
             position: relative;
+            border-left: 1px solid rgba(151, 7, 71, 0.2);
         }
-        .right-text { font-size: 2.5rem; font-weight: bold; text-align: center; color: rgba(0,0,0,0.3); }
+        .visual-placeholder {
+            text-align: center;
+            border: 2px dashed var(--pink-accent);
+            padding: 3rem;
+            color: var(--pink-accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            opacity: 0.5;
+        }
+        .date-stamp {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            writing-mode: vertical-rl;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
 
-        /* FOOTER & SOCIALS */
-        footer.landing-footer {
-            grid-column: span 2;
-            padding: 1.5rem 6rem;
+        /* FOOTER SOCIALS */
+        .socials {
+            position: absolute;
+            bottom: 30px;
+            left: 4rem;
             display: flex;
-            justify-content: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 1.5rem;
         }
-        .social-links { display: flex; gap: 1.5rem; margin: 0; padding: 0; }
-        .social-links a { text-decoration: none; color: var(--sub-text); font-size: 1.2rem; }
+        .socials a { color: var(--text-dim); text-decoration: none; font-size: 1rem; transition: color 0.3s; }
+        .socials a:hover { color: var(--pink-accent); }
 
-        /* RESPONSIVE LAYOUT */
-        @media (max-width: 1024px) {
-            .main-container { grid-template-columns: 100%; }
-            .content-section, .image-section { padding: 3rem; border-radius: 20px; }
-            .hero-title { font-size: 3.5rem; }
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .portfolio-frame { grid-template-columns: 1fr; }
+            .visual-area { min-height: 300px; border-left: none; border-top: 1px solid rgba(151, 7, 71, 0.2); }
+            .hero-text { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="landing-wrapper">
-        <header>
-            <div class="landing-template">LANDING PAGE TEMPLATE<span>Creativity</span></div>
-        </header>
-
-        <div class="main-container">
-            <nav class="top-nav">
-                <div class="site-logo">⦿</div> <ul class="nav-links">
-                    <li><a href="#">HOME</a></li>
-                    <li><a href="#">ABOUT</a></li>
-                    <li><a href="#">GALLERY</a></li>
-                    <li><a href="#">EVENT</a></li>
-                    <li><a href="#">CONTACT</a></li>
-                </ul>
-                <a href="#" class="login-btn">LOGING</a>
-            </nav>
-
-            <div class="content-section">
-                <h1 class="hero-title">
-                    Creativity<br>
-                    <span class="grad">never ends</span>
-                </h1 class="hero-sub">
-                <p>Focused on <span class="highlight">Predictive Maintenance</span>, FPGA (Cyclone IV), and embedded systems.</p>
-                <a href="https://github.com/Phil-CPE?tab=repositories" class="ticket-btn">Thesis Data</a>
+    <div class="portfolio-frame">
+        <nav>
+            <div class="logo">INA-CPE</div>
+            <div class="nav-links">
+                <a href="#">HOME</a>
+                <a href="#">THESIS</a>
+                <a href="#">GALLERY</a>
+                <a href="#">CONTACT</a>
             </div>
+            <a href="#" class="login-outline">LOGIN</a>
+        </nav>
 
-            <div class="image-section">
-                <div class="right-text">
-                    Main image placeholder<br>
-                    <span>(letters for now)</span>
-                </div>
+        <div class="content-area">
+            <h1 class="hero-text">
+                Energy<br>
+                <span>Monitoring</span>
+            </h1>
+            <p class="description">
+                TEST TEST TEST ENERGY GAP GAPGAP. <br><br>
+                Focused on <span style="color:white">Predictive Maintenance</span> and FPGA-based motor analysis.
+            </p>
+            <a href="https://github.com/Phil-CPE?tab=repositories" class="btn-action">View Projects</a>
+        </div>
+
+        <div class="visual-area">
+            <div class="visual-placeholder">
+                [ VISUAL DATA ]<br>
+                GRAPH / IMAGE
             </div>
+            <div class="date-stamp">APRIL 2026</div>
+        </div>
 
-            <footer class="landing-footer">
-                <div class="social-links">
-                    <a href="#">🐦</a> <a href="#">𝑓</a>
-                    <a href="#">📸</a>
-                </div>
-            </footer>
+        <div class="socials">
+            <a href="#">TW</a>
+            <a href="#">FB</a>
+            <a href="#">IG</a>
         </div>
     </div>
 
