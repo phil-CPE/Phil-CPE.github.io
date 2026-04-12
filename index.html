@@ -25,7 +25,7 @@
             overflow: hidden;
         }
 
-        /* PROFESSIONAL TOGGLE */
+        /* TOGGLE */
         #status-toggle {
             position: absolute;
             top: 25px;
@@ -34,10 +34,10 @@
             font-weight: 600;
             border: 1px solid var(--pure-white);
             padding: 10px 22px;
-            border-radius: 2px; /* Sharper edges for professional look */
+            border-radius: 2px;
             z-index: 1000;
             cursor: pointer;
-            background: transparent;
+            background: rgba(0,0,0,0.8);
             font-size: 0.75rem;
             display: flex;
             align-items: center;
@@ -46,27 +46,13 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        #status-toggle.connected { 
-            background: var(--pure-white); 
-            color: var(--dark-bg); 
-        }
+        #status-toggle.connected { background: var(--pure-white); color: var(--dark-bg); }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--pure-white);
-            border-radius: 50%;
-        }
-        .active-pulse { 
-            animation: pulse 2s infinite; 
-        }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
+        .status-dot { width: 8px; height: 8px; background-color: var(--pure-white); border-radius: 50%; }
+        .active-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* TOP SECTION */
+        /* HEADER */
         .top-content {
             height: 30vh;
             display: flex;
@@ -78,67 +64,60 @@
             background-position: center;
             border-bottom: 1px solid var(--border-color);
         }
-        .top-content h1 { font-size: 2.8rem; margin: 0; color: var(--pure-white); text-transform: uppercase; letter-spacing: 6px; font-weight: 800; }
-        .top-content h2 { font-size: 0.9rem; color: var(--muted-white); margin: 8px 0; letter-spacing: 3px; text-transform: uppercase; }
+        .top-content h1 { font-size: 2.2rem; margin: 0; color: var(--pure-white); text-transform: uppercase; letter-spacing: 6px; font-weight: 800; }
+        .top-content h2 { font-size: 0.8rem; color: var(--muted-white); margin: 8px 0; letter-spacing: 3px; text-transform: uppercase; }
 
         /* PAGE SYSTEM */
-        .page { display: none; height: 90vh; flex-direction: column; }
+        .page { display: none; height: 60vh; overflow-y: auto; overflow-x: hidden; flex-direction: column; }
         .page.active { display: flex; }
 
-        /* PAGE 1: MONITORING ROWS */
-        .rooms-container { display: flex; flex-direction: column; height: 60vh; }
+        /* PAGE 1 */
+        .rooms-container { display: flex; flex-direction: column; min-height: 100%; }
         .room-row {
-            flex: 1; display: flex; align-items: center; padding: 0 5rem;
+            flex: 1; display: flex; align-items: center; padding: 20px 5rem;
             border-bottom: 1px solid var(--border-color);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden; cursor: pointer;
+            transition: all 0.4s ease; cursor: pointer;
         }
         .room-row:hover { flex: 4; background: #080808; }
-        .room-label { font-size: 1.5rem; font-weight: 700; min-width: 250px; letter-spacing: 2px; }
-
-        .data-viz { flex-grow: 1; height: 75%; display: flex; align-items: center; gap: 40px; opacity: 0; transition: 0.5s; }
+        .room-label { font-size: 1.2rem; font-weight: 700; min-width: 200px; letter-spacing: 2px; }
+        .data-viz { flex-grow: 1; height: 150px; display: flex; align-items: center; gap: 40px; opacity: 0; transition: 0.5s; }
         .room-row:hover .data-viz { opacity: 1; }
-        
-        .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 4px; padding: 15px; }
-        .power-out { min-width: 180px; font-size: 3rem; font-weight: 200; text-align: right; }
+        .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 2px; padding: 10px; }
+        .power-out { min-width: 150px; font-size: 2.5rem; font-weight: 200; text-align: right; }
 
-        /* PAGE 2 & 3: CONTENT */
-        .portfolio-content { padding: 4rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 60vh; }
-        .info-card { background: #0a0a0a; padding: 30px; border-radius: 4px; border: 1px solid var(--border-color); }
-        .info-card h3 { color: var(--pure-white); margin-top: 0; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--accent-gray); padding-bottom: 10px; }
-        .info-card p { line-height: 1.8; color: var(--muted-white); font-size: 0.95rem; }
-        .media-box { border: 1px solid var(--border-color); width: 100%; margin-top: 20px; filter: grayscale(100%); transition: 0.5s; }
+        /* PORTFOLIO CONTENT (PAGES 2 & 3) */
+        .portfolio-content { padding: 2rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .info-card { background: #0a0a0a; padding: 25px; border: 1px solid var(--border-color); border-top: 2px solid var(--pure-white); }
+        .info-card h3 { font-size: 0.9rem; color: var(--pure-white); margin-top: 0; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--accent-gray); padding-bottom: 10px; margin-bottom: 15px; }
+        .info-card p { line-height: 1.6; color: var(--muted-white); font-size: 0.85rem; }
+        .media-box { border: 1px solid var(--border-color); width: 100%; max-height: 350px; object-fit: contain; margin-top: 10px; filter: grayscale(100%); transition: 0.5s; }
         .media-box:hover { filter: grayscale(0%); }
 
-        /* FOOTER PAGINATION */
+        /* FOOTER */
         .pagination {
             height: 10vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 25px;
+            gap: 20px;
             background: var(--dark-bg);
             border-top: 1px solid var(--border-color);
+            margin-top: auto;
         }
         .page-btn {
             background: transparent;
             border: 1px solid var(--accent-gray);
             color: var(--accent-gray);
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             font-weight: bold;
             transition: 0.3s;
-            letter-spacing: 1px;
         }
-        .page-btn.active { 
-            color: var(--pure-white); 
-            border-color: var(--pure-white); 
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .page-btn.active { color: var(--pure-white); border-color: var(--pure-white); background: rgba(255, 255, 255, 0.05); }
 
         #r1, #r2, #r3 { border-left: 2px solid var(--accent-gray); }
-        .room-row:hover { border-left: 2px solid var(--pure-white); }
+        .room-row:hover { border-left: 4px solid var(--pure-white); }
     </style>
 </head>
 <body>
@@ -155,48 +134,24 @@
 
     <div id="page1" class="page active">
         <div class="rooms-container">
-            <div class="room-row" id="r1">
-                <div class="room-label">ROOM 01</div>
-                <div class="data-viz">
-                    <div class="canvas-wrap"><canvas id="c1"></canvas></div>
-                    <div class="power-out" id="v1">0.00 W</div>
-                </div>
-            </div>
-            <div class="room-row" id="r2">
-                <div class="room-label">ROOM 02</div>
-                <div class="data-viz">
-                    <div class="canvas-wrap"><canvas id="c2"></canvas></div>
-                    <div class="power-out" id="v2">0.00 W</div>
-                </div>
-            </div>
-            <div class="room-row" id="r3">
-                <div class="room-label">ROOM 03</div>
-                <div class="data-viz">
-                    <div class="canvas-wrap"><canvas id="c3"></canvas></div>
-                    <div class="power-out" id="v3">0.00 W</div>
-                </div>
-            </div>
+            <div class="room-row" id="r1"><div class="room-label">ROOM 01</div><div class="data-viz"><div class="canvas-wrap"><canvas id="c1"></canvas></div><div class="power-out" id="v1">0.00 W</div></div></div>
+            <div class="room-row" id="r2"><div class="room-label">ROOM 02</div><div class="data-viz"><div class="canvas-wrap"><canvas id="c2"></canvas></div><div class="power-out" id="v2">0.00 W</div></div></div>
+            <div class="room-row" id="r3"><div class="room-label">ROOM 03</div><div class="data-viz"><div class="canvas-wrap"><canvas id="c3"></canvas></div><div class="power-out" id="v3">0.00 W</div></div></div>
         </div>
     </div>
 
     <div id="page2" class="page">
         <div class="portfolio-content">
-            <div class="info-card">
-                <h3>Technical Overview</h3>
-                <p>Advanced FPGA-based predictive maintenance integration. Analyzing Permanent Split Capacitor (PSC) motor telemetry for fault detection and energy efficiency.</p>
-            </div>
-            <div class="info-card">
-                <h3>Hardware Nodes</h3>
-                <p>Distributed monitoring using ESP32 edge devices synchronized with an Intel Cyclone IV FPGA core.</p>
-            </div>
+            <div class="info-card"><h3>Technical Overview</h3><p>FPGA-based predictive maintenance. Analyzing PSC motor telemetry for fault detection.</p></div>
+            <div class="info-card"><h3>Hardware Nodes</h3><p>Distributed monitoring using ESP32 edge devices and Intel Cyclone IV FPGA.</p></div>
         </div>
     </div>
 
     <div id="page3" class="page">
-        <div class="portfolio-content">
-            <div class="info-card" style="grid-column: span 2; text-align: center;">
+        <div class="portfolio-content" style="grid-template-columns: 1fr;">
+            <div class="info-card" style="text-align: center;">
                 <h3>System Outcome Visualization</h3>
-                <img src="phil-portfolio3.png" alt="Data Outcome" class="media-box" onerror="this.src='phil-portfolio3.gif'">
+                <img src="phil-portfolio3.png" alt="Outcome" class="media-box" onerror="this.src='phil-portfolio3.gif'">
             </div>
         </div>
     </div>
@@ -214,34 +169,17 @@
         function initChart(id) {
             return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
                 type: 'line',
-                data: {
-                    labels: Array(20).fill(''),
-                    datasets: [{
-                        data: Array(20).fill(0),
-                        borderColor: '#000000',
-                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                        borderWidth: 2, tension: 0.3, fill: true, pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { y: { display: false, min: 0, max: 400 }, x: { display: false } },
-                    plugins: { legend: { display: false } }
-                }
+                data: { labels: Array(20).fill(''), datasets: [{ data: Array(20).fill(0), borderColor: '#000', borderWidth: 2, tension: 0.3, fill: false, pointRadius: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false, min: 0, max: 400 }, x: { display: false } }, plugins: { legend: { display: false } } }
             });
         }
-
         for(let i=1; i<=3; i++) charts[i] = initChart(i);
 
-        const toggleBtn = document.getElementById('status-toggle');
-        const dot = document.getElementById('dot');
-        const label = document.getElementById('label');
-
-        toggleBtn.addEventListener('click', () => {
+        document.getElementById('status-toggle').addEventListener('click', function() {
             isRunning = !isRunning;
-            toggleBtn.classList.toggle('connected');
-            label.innerText = isRunning ? "Connected" : "Link";
-            dot.classList.toggle('active-pulse');
+            this.classList.toggle('connected');
+            document.getElementById('label').innerText = isRunning ? "Connected" : "Link";
+            document.getElementById('dot').classList.toggle('active-pulse');
             if(!isRunning) resetData();
         });
 
@@ -266,8 +204,7 @@
             for(let i=1; i<=3; i++) {
                 const val = (Math.random() * (ranges[i][1] - ranges[i][0]) + ranges[i][0]).toFixed(2);
                 document.getElementById(`v${i}`).innerText = `${val} W`;
-                charts[i].data.datasets[0].data.push(val);
-                charts[i].data.datasets[0].data.shift();
+                charts[i].data.datasets[0].data.push(val); charts[i].data.datasets[0].data.shift();
                 charts[i].update('none');
             }
         }, 1000);
