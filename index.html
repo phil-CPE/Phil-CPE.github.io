@@ -30,16 +30,18 @@
         .star {
             position: absolute;
             width: 2px;
-            height: 50px;
-            background: linear-gradient(to bottom, transparent, #fff);
+            height: 80px; /* Longer trails */
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
             opacity: 0;
             z-index: 0;
             pointer-events: none;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-100px) translateX(0) rotate(-20deg); opacity: 1; }
-            100% { transform: translateY(110vh) translateX(-200px) rotate(-20deg); opacity: 0; }
+            0% { transform: translateY(-100px) translateX(0) rotate(-25deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) translateX(-300px) rotate(-25deg); opacity: 0; }
         }
 
         /* TOGGLE BUTTON */
@@ -251,16 +253,20 @@
             });
         }, 1000);
 
-        // 2. FALLING STARS LOGIC (Every 5 seconds)
-        function createStar() {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * window.innerWidth + 'px';
-            star.style.animation = 'fall 1.5s linear forwards';
-            document.body.appendChild(star);
-            setTimeout(() => star.remove(), 2000);
+        // 2. 7 FALLING STARS LOGIC (Every 3 seconds)
+        function launchMeteors() {
+            for(let i=0; i<7; i++) {
+                setTimeout(() => {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = (Math.random() * 110) + 'vw'; // Spread across width
+                    star.style.animation = `fall ${1.5 + Math.random()}s linear forwards`;
+                    document.body.appendChild(star);
+                    setTimeout(() => star.remove(), 2500);
+                }, i * 150); // Slight stagger for natural look
+            }
         }
-        setInterval(createStar, 5000);
+        setInterval(launchMeteors, 3000);
 
         // 3. GRAPH LOGIC (With Axis Numbers)
         function initChart(id) {
