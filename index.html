@@ -12,6 +12,7 @@
             --muted-white: rgba(255, 255, 255, 0.6);
             --border-color: #222222;
             --accent-gray: #444444;
+            --neon-green: #39ff14;
         }
 
         body {
@@ -26,21 +27,28 @@
             position: relative;
         }
 
-        /* FALLING STARS / METEORS */
+        /* DYNAMIC FALLING STARS */
         .star {
             position: absolute;
-            width: 2px;
-            height: 80px; /* Longer trails */
             background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
             opacity: 0;
             z-index: 0;
             pointer-events: none;
         }
 
-        @keyframes fall {
+        @keyframes fall-straight {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+        @keyframes fall-left {
+            0% { transform: translateY(-100px) translateX(0) rotate(25deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) translateX(300px) rotate(25deg); opacity: 0; }
+        }
+        @keyframes fall-right {
             0% { transform: translateY(-100px) translateX(0) rotate(-25deg); opacity: 0; }
             10% { opacity: 1; }
-            90% { opacity: 1; }
             100% { transform: translateY(110vh) translateX(-300px) rotate(-25deg); opacity: 0; }
         }
 
@@ -58,10 +66,6 @@
             cursor: pointer;
             background: rgba(0,0,0,0.8);
             font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.4s ease;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -78,92 +82,64 @@
             padding: 0 5rem;
             border-bottom: 1px solid var(--border-color);
             position: relative;
-            overflow: hidden;
             background: #050505;
         }
 
-        .cube-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            perspective: 1000px;
-            z-index: 1;
-        }
-
+        .cube-container { position: absolute; width: 100%; height: 100%; perspective: 1000px; z-index: 1; }
         .cube {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            top: 20%;
-            left: 10%;
-            transform-style: preserve-3d;
-            animation: rotateCube 15s infinite linear;
+            position: absolute; width: 150px; height: 150px; top: 20%; left: 10%;
+            transform-style: preserve-3d; animation: rotateCube 15s infinite linear;
         }
-
         .cube-face {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border: 1.5px solid var(--pure-white);
-            background: rgba(255, 255, 255, 0.01);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute; width: 150px; height: 150px; border: 1.5px solid var(--pure-white);
+            background: rgba(255, 255, 255, 0.01); display: flex; justify-content: center; align-items: center;
             transition: border-color 1s ease;
         }
-
         .cube-face::before, .cube-face::after {
-            content: '';
-            position: absolute;
-            width: 141%;
-            height: 1px;
-            background: currentColor;
-            opacity: 0.4;
+            content: ''; position: absolute; width: 141%; height: 1px; background: currentColor; opacity: 0.4;
         }
         .cube-face::before { transform: rotate(45deg); }
         .cube-face::after { transform: rotate(-45deg); }
+        .front { transform: translateZ(75px); } .back { transform: rotateY(180deg) translateZ(75px); }
+        .left { transform: rotateY(-90deg) translateZ(75px); } .right { transform: rotateY(90deg) translateZ(75px); }
+        .top { transform: rotateX(90deg) translateZ(75px); } .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
-        .front  { transform: translateZ(75px); }
-        .back   { transform: rotateY(180deg) translateZ(75px); }
-        .left   { transform: rotateY(-90deg) translateZ(75px); }
-        .right  { transform: rotateY(90deg) translateZ(75px); }
-        .top    { transform: rotateX(90deg) translateZ(75px); }
-        .bottom { transform: rotateX(-90deg) translateZ(75px); }
-
-        @keyframes rotateCube {
-            from { transform: rotateX(0deg) rotateY(0deg); }
-            to { transform: rotateX(360deg) rotateY(360deg); }
-        }
+        @keyframes rotateCube { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
 
         .title-layer { position: relative; z-index: 10; }
         .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
-        .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; font-weight: 300; }
-        .presented-by span { color: var(--pure-white); font-weight: 500; }
+        .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; }
 
-        /* ROOMS & GRAPH */
+        /* PAGES */
         .page { display: none; height: 55vh; overflow-y: auto; flex-direction: column; z-index: 5; }
         .page.active { display: flex; }
+
+        /* ROOM ROWS */
         .room-row {
             flex: 1; display: flex; align-items: center; padding: 25px 5rem;
             border-bottom: 1px solid var(--border-color);
-            transition: 0.4s ease; cursor: pointer;
-            background: rgba(0,0,0,0.6);
+            transition: 0.4s ease; cursor: pointer; background: rgba(0,0,0,0.6);
         }
         .room-row:hover { flex: 4; background: rgba(8, 8, 8, 0.9); }
-        .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; letter-spacing: 2px; }
+        .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; }
+        .canvas-wrap { flex-grow: 1; height: 150px; background: #ffffff; border-radius: 2px; padding: 15px; margin: 0 40px; }
+        .power-out { min-width: 180px; font-size: 3rem; text-align: right; font-family: 'Courier New', monospace; }
 
-        .data-viz { flex-grow: 1; height: 180px; display: flex; align-items: center; gap: 40px; opacity: 0; transition: 0.5s; }
-        .room-row:hover .data-viz { opacity: 1; }
-        .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 2px; padding: 15px; }
-        .power-out { min-width: 180px; font-size: 3rem; font-weight: 200; text-align: right; font-family: 'Courier New', monospace; }
+        /* PAGE 2 STYLING */
+        .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 3rem 5rem; }
+        .tech-card { background: #0a0a0a; border: 1px solid var(--border-color); padding: 20px; border-top: 2px solid var(--pure-white); }
+        .tech-card h3 { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; }
+        .status-indicator { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--muted-white); }
+        .dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); }
 
+        /* FOOTER */
         .pagination {
             height: 10vh; display: flex; justify-content: center; align-items: center;
-            gap: 20px; background: var(--dark-bg); border-top: 1px solid var(--border-color); margin-top: auto; z-index: 10;
+            gap: 20px; background: var(--dark-bg); border-top: 1px solid var(--border-color); margin-top: auto;
         }
         .page-btn {
             background: transparent; border: 1px solid var(--accent-gray); color: var(--accent-gray);
-            width: 45px; height: 45px; cursor: pointer; font-weight: bold; transition: 0.3s;
+            width: 45px; height: 45px; cursor: pointer; font-weight: bold;
         }
         .page-btn.active { color: var(--pure-white); border-color: var(--pure-white); background: rgba(255, 255, 255, 0.05); }
     </style>
@@ -171,66 +147,39 @@
 <body>
 
     <button id="status-toggle">
-        <div id="dot" style="width:8px; height:8px; background:white; border-radius:50%;"></div>
         <span id="label">Link</span>
     </button>
 
     <div class="top-content">
-        <div class="cube-container">
-            <div class="cube" id="rainbow-cube">
-                <div class="cube-face front"></div>
-                <div class="cube-face back"></div>
-                <div class="cube-face left"></div>
-                <div class="cube-face right"></div>
-                <div class="cube-face top"></div>
-                <div class="cube-face bottom"></div>
-            </div>
-        </div>
-        
-        <div class="title-layer">
-            <h1>Energy Monitoring System</h1>
-            <div class="presented-by">Presented by: <span>Ina Peromingan & Aljon Dela Peña</span></div>
-        </div>
+        <div class="cube-container"><div class="cube" id="rainbow-cube"><div class="cube-face front"></div><div class="cube-face back"></div><div class="cube-face left"></div><div class="cube-face right"></div><div class="cube-face top"></div><div class="cube-face bottom"></div></div></div>
+        <div class="title-layer"><h1>Energy Monitoring System</h1><div class="presented-by">Presented by: <span>Ina Peromingan & Aljon Dela Peña</span></div></div>
     </div>
 
     <div id="page1" class="page active">
-        <div class="room-row">
-            <div class="room-label">ROOM 01</div>
-            <div class="data-viz">
-                <div class="canvas-wrap"><canvas id="c1"></canvas></div>
-                <div class="power-out" id="v1">0.00 W</div>
-            </div>
-        </div>
-        <div class="room-row">
-            <div class="room-label">ROOM 02</div>
-            <div class="data-viz">
-                <div class="canvas-wrap"><canvas id="c2"></canvas></div>
-                <div class="power-out" id="v2">0.00 W</div>
-            </div>
-        </div>
-        <div class="room-row">
-            <div class="room-label">ROOM 03</div>
-            <div class="data-viz">
-                <div class="canvas-wrap"><canvas id="c3"></canvas></div>
-                <div class="power-out" id="v3">0.00 W</div>
-            </div>
-        </div>
+        <div class="room-row"><div class="room-label">ROOM 01</div><div class="canvas-wrap"><canvas id="c1"></canvas></div><div class="power-out" id="v1">0.00 W</div></div>
+        <div class="room-row"><div class="room-label">ROOM 02</div><div class="canvas-wrap"><canvas id="c2"></canvas></div><div class="power-out" id="v2">0.00 W</div></div>
+        <div class="room-row"><div class="room-label">ROOM 03</div><div class="canvas-wrap"><canvas id="c3"></canvas></div><div class="power-out" id="v3">0.00 W</div></div>
     </div>
 
     <div id="page2" class="page">
-        <div style="padding: 5rem; text-align: center;">
-            <div style="background: #0a0a0a; padding: 40px; border: 1px solid var(--border-color); display: inline-block;">
-                <h3>Technical Overview</h3>
-                <p>Advanced telemetry synchronization for industrial hardware outcomes.</p>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>Hardware Status</h3>
+                <div class="status-indicator"><div class="dot"></div> FPGA Cyclone IV - Online</div>
+                <div class="status-indicator" style="margin-top:10px;"><div class="dot"></div> ESP32 Link - Active</div>
+            </div>
+            <div class="tech-card">
+                <h3>System Thresholds</h3>
+                <p style="font-size: 0.8rem; color: var(--muted-white);">Warning: 350.00 W<br>Critical: 380.00 W</p>
+            </div>
+            <div class="tech-card">
+                <h3>Analysis Mode</h3>
+                <p style="color: var(--neon-green); font-size: 0.8rem;">Real-time Predictive Maintenance Active</p>
             </div>
         </div>
     </div>
 
-    <div id="page3" class="page">
-        <div style="padding: 2rem; text-align: center;">
-            <img src="phil-portfolio3.gif" alt="Outcome" style="border: 1px solid var(--border-color); max-height: 400px;">
-        </div>
-    </div>
+    <div id="page3" class="page"><div style="padding: 2rem; text-align: center;"><img src="phil-portfolio3.gif" alt="Outcome" style="border: 1px solid var(--border-color); max-height: 400px;"></div></div>
 
     <div class="pagination">
         <button class="page-btn active" onclick="showPage(1)">01</button>
@@ -242,65 +191,44 @@
         const charts = {};
         let isRunning = false;
 
-        // 1. RAINBOW CUBE LOGIC
+        // 1. RAINBOW CUBE
         const cubeFaces = document.querySelectorAll('.cube-face');
         let hue = 0;
         setInterval(() => {
             hue = (hue + 45) % 360;
-            cubeFaces.forEach(face => {
-                face.style.borderColor = `hsla(${hue}, 70%, 70%, 0.8)`;
-                face.style.color = `hsla(${hue}, 70%, 70%, 0.8)`;
-            });
+            cubeFaces.forEach(f => { f.style.borderColor = `hsla(${hue}, 70%, 70%, 0.8)`; f.style.color = `hsla(${hue}, 70%, 70%, 0.8)`; });
         }, 1000);
 
-        // 2. 7 FALLING STARS LOGIC (Every 3 seconds)
+        // 2. MULTI-DIRECTIONAL STARS
         function launchMeteors() {
             for(let i=0; i<7; i++) {
                 setTimeout(() => {
                     const star = document.createElement('div');
                     star.className = 'star';
-                    star.style.left = (Math.random() * 110) + 'vw'; // Spread across width
-                    star.style.animation = `fall ${1.5 + Math.random()}s linear forwards`;
+                    star.style.left = (Math.random() * 100) + 'vw';
+                    star.style.width = '2px';
+                    star.style.height = (40 + Math.random() * 60) + 'px';
+                    
+                    // Random Direction Logic
+                    const directions = ['fall-straight', 'fall-left', 'fall-right'];
+                    const chosenDir = directions[Math.floor(Math.random() * directions.length)];
+                    star.style.animation = `${chosenDir} ${1 + Math.random()}s linear forwards`;
+                    
                     document.body.appendChild(star);
-                    setTimeout(() => star.remove(), 2500);
-                }, i * 150); // Slight stagger for natural look
+                    setTimeout(() => star.remove(), 2000);
+                }, i * 150);
             }
         }
         setInterval(launchMeteors, 3000);
 
-        // 3. GRAPH LOGIC (With Axis Numbers)
+        // 3. CHARTS
         function initChart(id) {
             return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
                 type: 'line',
-                data: { 
-                    labels: Array(30).fill(''), 
-                    datasets: [{ 
-                        data: Array(30).fill(0), 
-                        borderColor: '#000', 
-                        borderWidth: 2, 
-                        tension: 0.2, 
-                        fill: false, 
-                        pointRadius: 0 
-                    }] 
-                },
+                data: { labels: Array(30).fill(''), datasets: [{ data: Array(30).fill(0), borderColor: '#000', borderWidth: 2, tension: 0.2, fill: false, pointRadius: 0 }] },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { 
-                        y: { 
-                            display: true, 
-                            min: 0, 
-                            max: 400, 
-                            ticks: { 
-                                color: '#000', 
-                                font: { size: 10, weight: 'bold' },
-                                stepSize: 100,
-                                callback: function(value) { return value + 'W'; }
-                            },
-                            grid: { color: 'rgba(0,0,0,0.1)' }
-                        }, 
-                        x: { display: false } 
-                    },
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { min: 0, max: 400, ticks: { stepSize: 100, color: '#000', font: { weight: 'bold' } } }, x: { display: false } },
                     plugins: { legend: { display: false } }
                 }
             });
