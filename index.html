@@ -78,17 +78,32 @@
             top: 20%;
             left: 10%;
             transform-style: preserve-3d;
-            animation: rotateCube 20s infinite linear;
-            opacity: 0.15;
+            animation: rotateCube 15s infinite linear;
         }
 
         .cube-face {
             position: absolute;
             width: 150px;
             height: 150px;
-            border: 2px solid var(--pure-white);
-            background: rgba(255, 255, 255, 0.02);
+            border: 1.5px solid var(--pure-white); /* Thinner for tech look */
+            background: rgba(255, 255, 255, 0.01);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: border-color 1s ease; /* Transition for rainbow */
         }
+
+        /* Diagonal lines inside the cube faces */
+        .cube-face::before, .cube-face::after {
+            content: '';
+            position: absolute;
+            width: 141%; /* Diagonal length */
+            height: 1px;
+            background: currentColor; /* Matches border color */
+            opacity: 0.4;
+        }
+        .cube-face::before { transform: rotate(45deg); }
+        .cube-face::after { transform: rotate(-45deg); }
 
         .front  { transform: translateZ(75px); }
         .back   { transform: rotateY(180deg) translateZ(75px); }
@@ -102,17 +117,15 @@
             to { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* TEXT LAYER */
+        /* TITLE TEXT */
         .title-layer { position: relative; z-index: 10; }
         .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
         .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; font-weight: 300; }
         .presented-by span { color: var(--pure-white); font-weight: 500; }
 
-        /* PAGE SYSTEM */
+        /* PAGINATION & ROWS */
         .page { display: none; height: 55vh; overflow-y: auto; flex-direction: column; }
         .page.active { display: flex; }
-
-        /* ROOM ROWS */
         .room-row {
             flex: 1; display: flex; align-items: center; padding: 25px 5rem;
             border-bottom: 1px solid var(--border-color);
@@ -120,14 +133,11 @@
         }
         .room-row:hover { flex: 4; background: #080808; }
         .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; letter-spacing: 2px; }
-
-        /* PROFESSIONAL GRAPH STYLING */
         .data-viz { flex-grow: 1; height: 180px; display: flex; align-items: center; gap: 40px; opacity: 0; transition: 0.5s; }
         .room-row:hover .data-viz { opacity: 1; }
-        .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 2px; padding: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
+        .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 2px; padding: 15px; }
         .power-out { min-width: 180px; font-size: 3rem; font-weight: 200; text-align: right; font-family: 'Courier New', monospace; }
 
-        /* FOOTER */
         .pagination {
             height: 10vh; display: flex; justify-content: center; align-items: center;
             gap: 20px; background: var(--dark-bg); border-top: 1px solid var(--border-color); margin-top: auto;
@@ -138,11 +148,9 @@
         }
         .page-btn.active { color: var(--pure-white); border-color: var(--pure-white); background: rgba(255, 255, 255, 0.05); }
 
-        /* PORTFOLIO CONTENT */
         .portfolio-content { padding: 3rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         .info-card { background: #0a0a0a; padding: 30px; border: 1px solid var(--border-color); border-top: 2px solid var(--pure-white); }
-        .info-card h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
-        .media-box { border: 1px solid var(--border-color); width: 100%; max-height: 400px; object-fit: contain; margin-top: 15px; }
+        .media-box { border: 1px solid var(--border-color); width: 100%; max-height: 400px; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -154,7 +162,7 @@
 
     <div class="top-content">
         <div class="cube-container">
-            <div class="cube">
+            <div class="cube" id="rainbow-cube">
                 <div class="cube-face front"></div>
                 <div class="cube-face back"></div>
                 <div class="cube-face left"></div>
@@ -197,7 +205,7 @@
     <div id="page2" class="page">
         <div class="portfolio-content">
             <div class="info-card"><h3>Technical Goal</h3><p>Real-time telemetry analysis for motor health monitoring using distributed sensor nodes.</p></div>
-            <div class="info-card"><h3>Core Hardware</h3><p>Intel Cyclone IV FPGA + ESP32 Web Integration for high-speed data processing.</p></div>
+            <div class="info-card"><h3>Core Hardware</h3><p>Intel Cyclone IV FPGA + ESP32 Web Integration.</p></div>
         </div>
     </div>
 
@@ -219,6 +227,17 @@
     <script>
         const charts = {};
         let isRunning = false;
+
+        // Rainbow Cycle Logic
+        const cubeFaces = document.querySelectorAll('.cube-face');
+        let hue = 0;
+        setInterval(() => {
+            hue = (hue + 60) % 360; // Changes color every second (cycle through colors)
+            cubeFaces.forEach(face => {
+                face.style.borderColor = `hsla(${hue}, 70%, 70%, 0.8)`;
+                face.style.color = `hsla(${hue}, 70%, 70%, 0.8)`; // Applies to inner lines
+            });
+        }, 1000);
 
         function initChart(id) {
             return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
@@ -257,7 +276,8 @@
             for(let i=1; i<=3; i++) {
                 const val = (Math.random() * (ranges[i][1] - ranges[i][0]) + ranges[i][0]).toFixed(2);
                 document.getElementById(`v${i}`).innerText = `${val} W`;
-                charts[i].data.datasets[0].data.push(val); charts[i].data.datasets[0].data.shift();
+                charts[i].data.datasets[0].data.push(val); 
+                charts[i].data.datasets[0].data.shift();
                 charts[i].update('none');
             }
         }, 800);
