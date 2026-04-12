@@ -23,6 +23,23 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* FALLING STARS / METEORS */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, #fff);
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) translateX(0) rotate(-20deg); opacity: 1; }
+            100% { transform: translateY(110vh) translateX(-200px) rotate(-20deg); opacity: 0; }
         }
 
         /* TOGGLE BUTTON */
@@ -48,7 +65,7 @@
         }
         #status-toggle.connected { background: var(--pure-white); color: var(--dark-bg); }
 
-        /* 3D CUBE ANIMATION BACKGROUND */
+        /* HEADER & CUBE */
         .top-content {
             height: 35vh;
             display: flex;
@@ -85,21 +102,20 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            border: 1.5px solid var(--pure-white); /* Thinner for tech look */
+            border: 1.5px solid var(--pure-white);
             background: rgba(255, 255, 255, 0.01);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: border-color 1s ease; /* Transition for rainbow */
+            transition: border-color 1s ease;
         }
 
-        /* Diagonal lines inside the cube faces */
         .cube-face::before, .cube-face::after {
             content: '';
             position: absolute;
-            width: 141%; /* Diagonal length */
+            width: 141%;
             height: 1px;
-            background: currentColor; /* Matches border color */
+            background: currentColor;
             opacity: 0.4;
         }
         .cube-face::before { transform: rotate(45deg); }
@@ -117,22 +133,23 @@
             to { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* TITLE TEXT */
         .title-layer { position: relative; z-index: 10; }
         .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
         .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; font-weight: 300; }
         .presented-by span { color: var(--pure-white); font-weight: 500; }
 
-        /* PAGINATION & ROWS */
-        .page { display: none; height: 55vh; overflow-y: auto; flex-direction: column; }
+        /* ROOMS & GRAPH */
+        .page { display: none; height: 55vh; overflow-y: auto; flex-direction: column; z-index: 5; }
         .page.active { display: flex; }
         .room-row {
             flex: 1; display: flex; align-items: center; padding: 25px 5rem;
             border-bottom: 1px solid var(--border-color);
             transition: 0.4s ease; cursor: pointer;
+            background: rgba(0,0,0,0.6);
         }
-        .room-row:hover { flex: 4; background: #080808; }
+        .room-row:hover { flex: 4; background: rgba(8, 8, 8, 0.9); }
         .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; letter-spacing: 2px; }
+
         .data-viz { flex-grow: 1; height: 180px; display: flex; align-items: center; gap: 40px; opacity: 0; transition: 0.5s; }
         .room-row:hover .data-viz { opacity: 1; }
         .canvas-wrap { flex-grow: 1; height: 100%; background: #ffffff; border-radius: 2px; padding: 15px; }
@@ -140,17 +157,13 @@
 
         .pagination {
             height: 10vh; display: flex; justify-content: center; align-items: center;
-            gap: 20px; background: var(--dark-bg); border-top: 1px solid var(--border-color); margin-top: auto;
+            gap: 20px; background: var(--dark-bg); border-top: 1px solid var(--border-color); margin-top: auto; z-index: 10;
         }
         .page-btn {
             background: transparent; border: 1px solid var(--accent-gray); color: var(--accent-gray);
             width: 45px; height: 45px; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
         .page-btn.active { color: var(--pure-white); border-color: var(--pure-white); background: rgba(255, 255, 255, 0.05); }
-
-        .portfolio-content { padding: 3rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .info-card { background: #0a0a0a; padding: 30px; border: 1px solid var(--border-color); border-top: 2px solid var(--pure-white); }
-        .media-box { border: 1px solid var(--border-color); width: 100%; max-height: 400px; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -203,18 +216,17 @@
     </div>
 
     <div id="page2" class="page">
-        <div class="portfolio-content">
-            <div class="info-card"><h3>Technical Goal</h3><p>Real-time telemetry analysis for motor health monitoring using distributed sensor nodes.</p></div>
-            <div class="info-card"><h3>Core Hardware</h3><p>Intel Cyclone IV FPGA + ESP32 Web Integration.</p></div>
+        <div style="padding: 5rem; text-align: center;">
+            <div style="background: #0a0a0a; padding: 40px; border: 1px solid var(--border-color); display: inline-block;">
+                <h3>Technical Overview</h3>
+                <p>Advanced telemetry synchronization for industrial hardware outcomes.</p>
+            </div>
         </div>
     </div>
 
     <div id="page3" class="page">
-        <div class="portfolio-content" style="grid-template-columns: 1fr;">
-            <div class="info-card" style="text-align: center;">
-                <h3>Outcome Visualization</h3>
-                <img src="phil-portfolio3.gif" alt="System GIF" class="media-box">
-            </div>
+        <div style="padding: 2rem; text-align: center;">
+            <img src="phil-portfolio3.gif" alt="Outcome" style="border: 1px solid var(--border-color); max-height: 400px;">
         </div>
     </div>
 
@@ -228,26 +240,68 @@
         const charts = {};
         let isRunning = false;
 
-        // Rainbow Cycle Logic
+        // 1. RAINBOW CUBE LOGIC
         const cubeFaces = document.querySelectorAll('.cube-face');
         let hue = 0;
         setInterval(() => {
-            hue = (hue + 60) % 360; // Changes color every second (cycle through colors)
+            hue = (hue + 45) % 360;
             cubeFaces.forEach(face => {
                 face.style.borderColor = `hsla(${hue}, 70%, 70%, 0.8)`;
-                face.style.color = `hsla(${hue}, 70%, 70%, 0.8)`; // Applies to inner lines
+                face.style.color = `hsla(${hue}, 70%, 70%, 0.8)`;
             });
         }, 1000);
 
+        // 2. FALLING STARS LOGIC (Every 5 seconds)
+        function createStar() {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            star.style.animation = 'fall 1.5s linear forwards';
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 2000);
+        }
+        setInterval(createStar, 5000);
+
+        // 3. GRAPH LOGIC (With Axis Numbers)
         function initChart(id) {
             return new Chart(document.getElementById(`c${id}`).getContext('2d'), {
                 type: 'line',
-                data: { labels: Array(25).fill(''), datasets: [{ data: Array(25).fill(0), borderColor: '#000', borderWidth: 2, tension: 0.1, fill: false, pointRadius: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: true, min: 0, max: 400, ticks: { display: false } }, x: { display: false } }, plugins: { legend: { display: false } } }
+                data: { 
+                    labels: Array(30).fill(''), 
+                    datasets: [{ 
+                        data: Array(30).fill(0), 
+                        borderColor: '#000', 
+                        borderWidth: 2, 
+                        tension: 0.2, 
+                        fill: false, 
+                        pointRadius: 0 
+                    }] 
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        y: { 
+                            display: true, 
+                            min: 0, 
+                            max: 400, 
+                            ticks: { 
+                                color: '#000', 
+                                font: { size: 10, weight: 'bold' },
+                                stepSize: 100,
+                                callback: function(value) { return value + 'W'; }
+                            },
+                            grid: { color: 'rgba(0,0,0,0.1)' }
+                        }, 
+                        x: { display: false } 
+                    },
+                    plugins: { legend: { display: false } }
+                }
             });
         }
         for(let i=1; i<=3; i++) charts[i] = initChart(i);
 
+        // 4. CONTROLS
         document.getElementById('status-toggle').addEventListener('click', function() {
             isRunning = !isRunning;
             this.classList.toggle('connected');
@@ -258,7 +312,7 @@
         function resetData() {
             for(let i=1; i<=3; i++) {
                 document.getElementById(`v${i}`).innerText = "0.00 W";
-                charts[i].data.datasets[0].data = Array(25).fill(0);
+                charts[i].data.datasets[0].data = Array(30).fill(0);
                 charts[i].update();
             }
         }
