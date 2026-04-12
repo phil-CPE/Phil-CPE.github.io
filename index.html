@@ -54,8 +54,13 @@
             align-items: center;
             gap: 10px;
             transition: 0.3s;
+            text-transform: uppercase;
         }
-        #status-toggle.connected { color: var(--teal); border-color: var(--teal); box-shadow: 0 0 10px var(--teal); }
+        #status-toggle.connected { 
+            color: var(--teal); 
+            border-color: var(--teal); 
+            box-shadow: 0 0 10px var(--teal); 
+        }
 
         /* HEADER SECTION */
         .top-content {
@@ -64,7 +69,7 @@
             flex-direction: column;
             justify-content: center;
             padding: 0 4rem;
-            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('phil-portfolio.png');
+            background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)), url('phil-portfolio.png');
             background-size: cover;
             background-position: center;
             border-bottom: 1px solid #222;
@@ -98,7 +103,7 @@
         .info-card h3 { color: var(--pink); margin-top: 0; text-transform: uppercase; }
         .info-card p { line-height: 1.6; color: #ccc; }
 
-        /* FOOTER PAGINATION - BLACK & PINK */
+        /* FOOTER PAGINATION */
         .pagination {
             height: 10vh;
             display: flex;
@@ -140,12 +145,12 @@
 
     <button id="status-toggle">
         <div id="dot" style="width:8px; height:8px; background:var(--pink); border-radius:50%;"></div>
-        <span id="label">LINKING...</span>
+        <span id="label">Link</span>
     </button>
 
     <div class="top-content">
         <h1>Energy Monitoring System</h1>
-        <h2>Ina Peromingan & Aljun Dela Peña</h2>
+        <h2>Ina Peromingan & Aljon Dela Peña</h2>
     </div>
 
     <div id="page1" class="page active">
@@ -219,12 +224,11 @@
 
         for(let i=1; i<=3; i++) charts[i] = initChart(i, colors[i]);
 
-        // Toggle Switch
         const toggleBtn = document.getElementById('status-toggle');
         toggleBtn.addEventListener('click', () => {
             isRunning = !isRunning;
             toggleBtn.classList.toggle('connected');
-            document.getElementById('label').innerText = isRunning ? "CONNECTED" : "LINKING...";
+            document.getElementById('label').innerText = isRunning ? "Connected" : "Link";
             document.getElementById('dot').style.background = isRunning ? "var(--teal)" : "var(--pink)";
             if(!isRunning) resetData();
         });
@@ -237,7 +241,6 @@
             }
         }
 
-        // Pagination Logic
         function showPage(num) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
