@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Monitoring | Black & Pink UI</title>
+    <title>Energy Monitoring | Ina & Aljon</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -56,11 +56,7 @@
             transition: 0.3s;
             text-transform: uppercase;
         }
-        #status-toggle.connected { 
-            color: var(--teal); 
-            border-color: var(--teal); 
-            box-shadow: 0 0 10px var(--teal); 
-        }
+        #status-toggle.connected { color: var(--teal); border-color: var(--teal); box-shadow: 0 0 10px var(--teal); }
 
         /* HEADER SECTION */
         .top-content {
@@ -91,17 +87,19 @@
         .canvas-wrap { flex-grow: 1; height: 100%; background: #fff; border-radius: 10px; padding: 10px; }
         .power-out { min-width: 150px; font-size: 2.5rem; font-weight: bold; text-align: right; }
 
-        /* PAGE 2: PORTFOLIO */
+        /* PORTFOLIO CONTENT (PAGES 2 & 3) */
         .portfolio-content {
-            padding: 4rem;
+            padding: 2rem 4rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 30px;
             height: 60vh;
+            overflow-y: auto;
         }
-        .info-card { background: var(--gray); padding: 25px; border-radius: 15px; border: 1px solid #222; border-top: 3px solid var(--pink); }
+        .info-card { background: var(--gray); padding: 20px; border-radius: 15px; border: 1px solid #222; border-top: 3px solid var(--pink); }
         .info-card h3 { color: var(--pink); margin-top: 0; text-transform: uppercase; }
-        .info-card p { line-height: 1.6; color: #ccc; }
+        .info-card p { line-height: 1.5; color: #ccc; }
+        .media-box { border: 1px solid var(--pink); border-radius: 10px; width: 100%; margin-top: 15px; }
 
         /* FOOTER PAGINATION */
         .pagination {
@@ -131,10 +129,9 @@
         .page-btn.active { 
             color: var(--pink); 
             border-color: var(--pink); 
-            background: rgba(255, 192, 203, 0.1);
+            background: rgba(255, 192, 203, 0.1); 
             box-shadow: 0 0 10px rgba(255, 192, 203, 0.2);
         }
-        .page-btn:hover:not(.active) { border-color: var(--white); color: var(--white); }
 
         #r1 { border-left: 8px solid var(--pink); }
         #r2 { border-left: 8px solid var(--teal); }
@@ -182,12 +179,23 @@
     <div id="page2" class="page">
         <div class="portfolio-content">
             <div class="info-card">
-                <h3>Project Thesis</h3>
-                <p>FPGA-based predictive maintenance system for Permanent Split Capacitor (PSC) motors. We utilize vibration and current monitoring to detect early-stage hardware fatigue.</p>
+                <h3>Thesis Focus</h3>
+                <p>FPGA-based predictive maintenance for PSC motors. We analyze energy consumption and vibration to prevent industrial downtime.</p>
             </div>
             <div class="info-card">
-                <h3>Hardware Outcome</h3>
-                <p>By synchronizing three independent ESP32 nodes, the system compares energy consumption gaps and provides thermal thresholds for industrial hardware safety.</p>
+                <h3>Hardware Setup</h3>
+                <p>The system utilizes three ESP32 nodes synchronized with a Cyclone IV FPGA for high-speed motor analysis.</p>
+                <img src="your-animation.gif" alt="Hardware GIF" class="media-box" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
+        <div class="portfolio-content">
+            <div class="info-card" style="grid-column: span 2;">
+                <h3>System Analysis Outcome</h3>
+                <p>Detailed performance metrics and outcome visualization. This view shows the processed data from our FPGA system.</p>
+                <img src="phil-portfolio3.png" alt="Portfolio 3" class="media-box" onerror="this.src='phil-portfolio3.gif'">
             </div>
         </div>
     </div>
@@ -195,6 +203,7 @@
     <div class="pagination">
         <button class="page-btn active" onclick="showPage(1)">1</button>
         <button class="page-btn" onclick="showPage(2)">2</button>
+        <button class="page-btn" onclick="showPage(3)">3</button>
     </div>
 
     <script>
