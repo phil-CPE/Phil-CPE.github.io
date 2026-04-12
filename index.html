@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Monitoring | Professional UI</title>
+    <title>Energy Monitoring | Ina & Aljon</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -90,8 +90,17 @@
         .info-card { background: #0a0a0a; padding: 25px; border: 1px solid var(--border-color); border-top: 2px solid var(--pure-white); }
         .info-card h3 { font-size: 0.9rem; color: var(--pure-white); margin-top: 0; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--accent-gray); padding-bottom: 10px; margin-bottom: 15px; }
         .info-card p { line-height: 1.6; color: var(--muted-white); font-size: 0.85rem; }
-        .media-box { border: 1px solid var(--border-color); width: 100%; max-height: 350px; object-fit: contain; margin-top: 10px; filter: grayscale(100%); transition: 0.5s; }
-        .media-box:hover { filter: grayscale(0%); }
+        
+        /* CORRECTED MEDIA BOX (REMOVED GRAYSCALE) */
+        .media-box { 
+            border: 1px solid var(--border-color); 
+            width: 100%; 
+            max-height: 350px; 
+            object-fit: contain; 
+            margin-top: 10px; 
+            transition: 0.5s; 
+            /* Filter grayscale removed */
+        }
 
         /* FOOTER */
         .pagination {
@@ -151,7 +160,7 @@
         <div class="portfolio-content" style="grid-template-columns: 1fr;">
             <div class="info-card" style="text-align: center;">
                 <h3>System Outcome Visualization</h3>
-                <img src="phil-portfolio3.png" alt="Outcome" class="media-box" onerror="this.src='phil-portfolio3.gif'">
+                <img src="phil-portfolio3.gif" alt="Outcome" class="media-box">
             </div>
         </div>
     </div>
