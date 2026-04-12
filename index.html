@@ -13,6 +13,7 @@
             --border-color: #222222;
             --accent-gray: #444444;
             --neon-green: #39ff14;
+            --neon-red: #ff3131;
         }
 
         body {
@@ -27,7 +28,7 @@
             position: relative;
         }
 
-        /* DYNAMIC FALLING STARS */
+        /* 1. DYNAMIC FALLING STARS */
         .star {
             position: absolute;
             background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
@@ -35,12 +36,11 @@
             z-index: 0;
             pointer-events: none;
         }
-
         @keyframes fall-straight { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh); opacity: 0; } }
         @keyframes fall-left { 0% { transform: translateY(-100px) translateX(0) rotate(25deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh) translateX(300px) rotate(25deg); opacity: 0; } }
         @keyframes fall-right { 0% { transform: translateY(-100px) translateX(0) rotate(-25deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh) translateX(-300px) rotate(-25deg); opacity: 0; } }
 
-        /* BUTTONS CONTAINER */
+        /* 2. CONTROLS CONTAINER */
         .controls-top {
             position: absolute;
             top: 25px;
@@ -51,7 +51,6 @@
             z-index: 1000;
             align-items: flex-end;
         }
-
         .btn-style {
             color: var(--pure-white);
             font-weight: 600;
@@ -65,17 +64,17 @@
             font-size: 0.7rem;
             transition: 0.3s;
         }
-
+        
         #status-toggle.connected { background: var(--pure-white); color: var(--dark-bg); }
-        #door-toggle.active { border-color: var(--neon-green); color: var(--neon-green); }
+        #door-toggle.active { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+        #door-toggle.inactive { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 49, 49, 0.2); }
 
-        /* HEADER & CUBE */
+        /* 3. HEADER & CUBE */
         .top-content {
             height: 35vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; padding: 0 5rem;
             border-bottom: 1px solid var(--border-color); position: relative; background: #050505;
         }
-
         .cube-container { position: absolute; width: 100%; height: 100%; perspective: 1000px; z-index: 1; }
         .cube { position: absolute; width: 150px; height: 150px; top: 20%; left: 10%; transform-style: preserve-3d; animation: rotateCube 15s infinite linear; }
         .cube-face {
@@ -94,37 +93,59 @@
         .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
         .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; }
 
-        /* PAGES */
+        /* 4. PAGE SYSTEM */
         .page { display: none; height: 55vh; overflow: hidden; flex-direction: column; z-index: 5; }
         .page.active { display: flex; }
 
-        /* SLIDING ROOM ROWS */
+        /* 5. PAGE 1: SLIDING ROOMS */
         .room-row {
             flex: 1; display: flex; align-items: center; padding: 0 5rem;
             border-bottom: 1px solid var(--border-color);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer; background: rgba(0,0,0,0.6); overflow: hidden;
         }
-
-        /* This handles both the Hover AND the Toggle Button */
-        .room-row:hover, .room-row.force-open { 
-            flex: 6; 
-            background: rgba(8, 8, 8, 0.9); 
-        }
-
+        .room-row:hover, .room-row.force-open { flex: 6; background: rgba(8, 8, 8, 0.9); }
         .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; }
-
-        .data-reveal {
-            flex-grow: 1; display: flex; align-items: center; gap: 40px;
-            opacity: 0; transform: translateY(20px); transition: 0.4s ease;
-        }
-        
-        .room-row:hover .data-reveal, .room-row.force-open .data-reveal { 
-            opacity: 1; transform: translateY(0); 
-        }
-
+        .data-reveal { flex-grow: 1; display: flex; align-items: center; gap: 40px; opacity: 0; transform: translateY(20px); transition: 0.4s ease; }
+        .room-row:hover .data-reveal, .room-row.force-open .data-reveal { opacity: 1; transform: translateY(0); }
         .canvas-wrap { flex-grow: 1; height: 180px; background: #ffffff; border-radius: 2px; padding: 15px; }
         .power-out { min-width: 180px; font-size: 3rem; text-align: right; font-family: 'Courier New', monospace; }
+
+        /* 6. PAGE 2: TECH DETAILS (NEW DESIGN) */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 2rem 5rem;
+            height: 100%;
+        }
+        .tech-card {
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-top: 2px solid var(--pure-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .tech-card h3 { 
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #222; 
+            padding-bottom: 10px; 
+        }
+        .status-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 0.9rem; color: #ccc; }
+        .dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); }
+        .tech-list { font-size: 0.85rem; color: var(--muted-white); line-height: 1.8; margin: 0; padding: 0; list-style: none; }
+        .tech-list li b { color: var(--pure-white); }
+
+        /* 7. PAGE 3: OUTCOME */
+        #page3 { justify-content: flex-start; align-items: center; padding: 2rem; overflow: hidden; }
+        .thank-you-title { font-size: 2.5rem; font-weight: 800; color: var(--pure-white); text-transform: uppercase; letter-spacing: 10px; margin-bottom: 1rem; text-align: center; }
+        .gif-container-fixed { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid var(--border-color); background: #050505; }
+        .media-box-fixed { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
 
         /* FOOTER */
         .pagination {
@@ -142,7 +163,7 @@
 
     <div class="controls-top">
         <button id="status-toggle" class="btn-style">Link</button>
-        <button id="door-toggle" class="btn-style">Toggle On/Off</button>
+        <button id="door-toggle" class="btn-style inactive">OFF</button>
     </div>
 
     <div class="top-content">
@@ -157,15 +178,32 @@
     </div>
 
     <div id="page2" class="page">
-        <div style="padding: 5rem; text-align: center;">
-            <div style="background: #0a0a0a; padding: 40px; border: 1px solid var(--border-color); border-top: 2px solid white; display: inline-block;">
-                <h3>Technical Overview</h3>
-                <p>FPGA-based predictive maintenance. Analyzing telemetry for fault detection.</p>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>Hardware Components</h3>
+                <div class="status-row"><div class="dot"></div> Intel Cyclone IV FPGA (Main Processing)</div>
+                <div class="status-row"><div class="dot"></div> ESP32 Wireless Nodes (Data Transmission)</div>
+                <div class="status-row"><div class="dot"></div> ACS712 Current Sensors (Telemetry)</div>
+                <div class="status-row" style="margin-top:20px; color:var(--muted-white); font-style:italic;">All modules currently synchronized.</div>
+            </div>
+            <div class="tech-card">
+                <h3>Predictive Maintenance Logic</h3>
+                <ul class="tech-list">
+                    <li><b>Monitoring Type:</b> Real-time Hardware Fatigue Detection</li>
+                    <li><b>Warning Threshold:</b> 350.00 Watts (Thermal Stress Check)</li>
+                    <li><b>Critical Threshold:</b> 380.00 Watts (Automatic Shutoff Trigger)</li>
+                    <li><b>Analysis Method:</b> Power Flux Analysis via FPGA Logic Gates</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <div id="page3" class="page"><div style="padding: 2rem; text-align: center;"><img src="phil-portfolio3.gif" alt="Outcome" style="border: 1px solid var(--border-color); max-height: 400px;"></div></div>
+    <div id="page3" class="page">
+        <div class="thank-you-title">THANK YOU</div>
+        <div class="gif-container-fixed">
+            <img src="phil-portfolio3.gif" alt="Outcome" class="media-box-fixed">
+        </div>
+    </div>
 
     <div class="pagination">
         <button class="page-btn active" onclick="showPage(1)">01</button>
@@ -200,16 +238,18 @@
         }
         setInterval(launchMeteors, 3000);
 
-        // DOOR TOGGLE LOGIC
+        // Door Toggle
         const doorBtn = document.getElementById('door-toggle');
         doorBtn.addEventListener('click', () => {
             doorsOpen = !doorsOpen;
-            doorBtn.classList.toggle('active');
             const rooms = [document.getElementById('room1'), document.getElementById('room2'), document.getElementById('room3')];
-            rooms.forEach(room => {
-                if(doorsOpen) room.classList.add('force-open');
-                else room.classList.remove('force-open');
-            });
+            if(doorsOpen) {
+                doorBtn.innerText = "ON"; doorBtn.classList.replace('inactive', 'active');
+                rooms.forEach(r => r.classList.add('force-open'));
+            } else {
+                doorBtn.innerText = "OFF"; doorBtn.classList.replace('active', 'inactive');
+                rooms.forEach(r => r.classList.remove('force-open'));
+            }
         });
 
         // Charts
@@ -226,7 +266,7 @@
         }
         for(let i=1; i<=3; i++) charts[i] = initChart(i);
 
-        // LINK CONTROLS
+        // Link Controls
         document.getElementById('status-toggle').addEventListener('click', function() {
             isRunning = !isRunning;
             this.classList.toggle('connected');
