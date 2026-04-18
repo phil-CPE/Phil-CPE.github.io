@@ -22,14 +22,12 @@
             font-family: 'Inter', sans-serif; overflow: hidden; position: relative;
         }
 
-        /* 1. DYNAMIC FALLING STARS */
         .star {
             position: absolute; background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
             opacity: 0; z-index: 0; pointer-events: none;
         }
         @keyframes fall-straight { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh); opacity: 0; } }
 
-        /* 2. CONTROLS CONTAINER */
         .controls-top {
             position: absolute; top: 25px; right: 5rem; display: flex; flex-direction: column;
             gap: 10px; z-index: 1000; align-items: flex-end;
@@ -43,25 +41,23 @@
         #door-toggle.active { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
         #door-toggle.inactive { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 49, 49, 0.2); }
 
-        /* 3. HEADER & PSC MOTOR */
         .top-content {
             height: 35vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; padding: 0 5rem;
             border-bottom: 1px solid var(--border-color); position: relative; background: #050505;
         }
 
-        /* Motor container positioned like the old cube */
         #motor-container { position: absolute; width: 300px; height: 300px; left: 5%; top: 50%; transform: translateY(-50%); z-index: 1; }
 
         .title-layer { position: relative; z-index: 2; }
         .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
         .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; }
 
-        /* 4. PAGE SYSTEM */
+        /* PAGE SYSTEM */
         .page { display: none; height: 55vh; overflow: hidden; flex-direction: column; z-index: 5; }
         .page.active { display: flex; }
 
-        /* 5. SLIDING ROOM ROWS */
+        /* PAGE 1: ROOMS */
         .room-row {
             flex: 1; display: flex; align-items: center; padding: 0 5rem;
             border-bottom: 1px solid var(--border-color);
@@ -75,20 +71,19 @@
         .canvas-wrap { flex-grow: 1; height: 180px; background: #ffffff; border-radius: 2px; padding: 15px; }
         .power-out { min-width: 180px; font-size: 3rem; text-align: right; font-family: 'Courier New', monospace; }
 
-        /* 6. PAGE 2: TECH DETAILS */
+        /* PAGE 2: TECH */
         .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 2rem 5rem; height: 100%; }
         .tech-card { background: #0a0a0a; border: 1px solid var(--border-color); padding: 25px; border-top: 2px solid var(--pure-white); }
-        .tech-card h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .tech-card h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 15px;}
         .status-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 0.9rem; color: #ccc; }
         .dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); }
 
-        /* 7. PAGE 3: THANK YOU */
+        /* PAGE 3: OUTCOME */
         #page3 { justify-content: flex-start; align-items: center; padding: 2rem; overflow: hidden; }
         .thank-you-title { font-size: 2.5rem; font-weight: 800; color: var(--pure-white); text-transform: uppercase; letter-spacing: 10px; margin-bottom: 1rem; text-align: center; }
         .gif-container-fixed { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid var(--border-color); background: #050505; }
         .media-box-fixed { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* FOOTER */
         .pagination {
             height: 10vh; display: flex; align-items: center; justify-content: center;
             gap: 20px; border-top: 1px solid var(--border-color); background: #000;
@@ -109,7 +104,6 @@
 
     <div class="top-content">
         <div id="motor-container"></div>
-        
         <div class="title-layer">
             <h1>Dorm Energy Monitoring</h1>
             <div class="presented-by">DESIGNED FOR SMART FACILITY MANAGEMENT</div>
@@ -169,7 +163,6 @@
     </div>
 
     <script>
-        // 1. PSC MOTOR WIREFRAME (Three.js)
         const scene = new THREE.Scene();
         const motorContainer = document.getElementById('motor-container');
         const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
@@ -180,15 +173,10 @@
         const motorGroup = new THREE.Group();
         const material = new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true });
 
-        // Stator (Main Cylinder)
         const stator = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 2, 12, 4, true), material);
         motorGroup.add(stator);
-
-        // Shaft
         const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2.8, 8, 1, true), material);
         motorGroup.add(shaft);
-
-        // Capacitor Box
         const capacitor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.9, 0.6), material);
         capacitor.position.set(1, 0.4, 0);
         motorGroup.add(capacitor);
@@ -204,15 +192,23 @@
         }
         animateMotor();
 
-        // 2. PAGE NAVIGATION
         function showPage(num) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('page' + num).classList.add('active');
-            document.querySelectorAll('.page-btn')[num-1].classList.add('active');
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+            });
+            // Deactivate all buttons
+            document.querySelectorAll('.page-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            // Show target page and activate button
+            const targetPage = document.getElementById('page' + num);
+            if(targetPage) {
+                targetPage.classList.add('active');
+                document.querySelectorAll('.page-btn')[num-1].classList.add('active');
+            }
         }
 
-        // 3. FALLING STARS LOGIC
         function createStar() {
             const star = document.createElement('div');
             star.className = 'star';
@@ -220,13 +216,12 @@
             star.style.width = size + 'px';
             star.style.height = (Math.random() * 100 + 50) + 'px';
             star.style.left = Math.random() * 100 + 'vw';
-            star.style.animation = `fall-straight ${Math.random() * 2 + 1}s linear infinite`;
+            star.style.animation = `fall-straight ${Math.random() * 2 + 1}s linear forwards`;
             document.body.appendChild(star);
             setTimeout(() => star.remove(), 3000);
         }
         setInterval(createStar, 100);
 
-        // 4. DOOR TOGGLE
         let doorsOpen = false;
         const doorBtn = document.getElementById('door-toggle');
         doorBtn.addEventListener('click', () => {
@@ -241,7 +236,6 @@
             }
         });
 
-        // 5. CHARTS INITIALIZATION
         const charts = {};
         function initChart(id) {
             return new Chart(document.getElementById('chart'+id), {
@@ -252,7 +246,6 @@
         }
         for(let i=1; i<=3; i++) charts[i] = initChart(i);
 
-        // 6. LINK STATUS
         let isRunning = false;
         document.getElementById('status-toggle').addEventListener('click', function() {
             isRunning = !isRunning;
