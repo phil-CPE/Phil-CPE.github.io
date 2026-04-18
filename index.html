@@ -1,84 +1,264 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dorm Energy Monitoring Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Monitoring | Professional CpE UI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; margin: 0; }
-        
-        /* Header styling to put title and motor side-by-side */
-        .header-container { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
-            background: #2d2d2d;
-            border-bottom: 2px solid #00ffcc;
+        :root {
+            --dark-bg: #000000;
+            --pure-white: #ffffff;
+            --muted-white: rgba(255, 255, 255, 0.6);
+            --border-color: #222222;
+            --accent-gray: #444444;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
         }
 
-        h1 { margin: 0 20px; }
-
-        #motor-canvas { 
-            width: 100px; /* Small size for header */
-            height: 100px; 
+        body {
+            margin: 0; padding: 0; background: var(--dark-bg); color: var(--pure-white);
+            font-family: 'Inter', sans-serif; overflow: hidden; position: relative;
         }
 
-        .container { width: 90%; margin: 20px auto; background: #2d2d2d; padding: 20px; border-radius: 10px; }
-        iframe { width: 100%; height: 600px; border: none; }
+        /* 1. DYNAMIC FALLING STARS */
+        .star {
+            position: absolute; background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8));
+            opacity: 0; z-index: 0; pointer-events: none;
+        }
+        @keyframes fall-straight { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh); opacity: 0; } }
+
+        /* 2. CONTROLS CONTAINER */
+        .controls-top {
+            position: absolute; top: 25px; right: 5rem; display: flex; flex-direction: column;
+            gap: 10px; z-index: 1000; align-items: flex-end;
+        }
+        .btn-style {
+            color: var(--pure-white); font-weight: 600; background: transparent;
+            border: 1px solid var(--border-color); padding: 8px 20px; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 0.7rem; transition: 0.3s; cursor: pointer;
+        }
+        #status-toggle.connected { background: var(--pure-white); color: var(--dark-bg); }
+        #door-toggle.active { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+        #door-toggle.inactive { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 49, 49, 0.2); }
+
+        /* 3. HEADER & PSC MOTOR */
+        .top-content {
+            height: 35vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; padding: 0 5rem;
+            border-bottom: 1px solid var(--border-color); position: relative; background: #050505;
+        }
+
+        /* Motor container positioned like the old cube */
+        #motor-container { position: absolute; width: 300px; height: 300px; left: 5%; top: 50%; transform: translateY(-50%); z-index: 1; }
+
+        .title-layer { position: relative; z-index: 2; }
+        .title-layer h1 { font-size: 3rem; margin: 0; letter-spacing: 8px; font-weight: 800; text-transform: uppercase; }
+        .presented-by { font-size: 1rem; color: var(--muted-white); margin-top: 15px; letter-spacing: 3px; }
+
+        /* 4. PAGE SYSTEM */
+        .page { display: none; height: 55vh; overflow: hidden; flex-direction: column; z-index: 5; }
+        .page.active { display: flex; }
+
+        /* 5. SLIDING ROOM ROWS */
+        .room-row {
+            flex: 1; display: flex; align-items: center; padding: 0 5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer; background: rgba(0,0,0,0.6); overflow: hidden;
+        }
+        .room-row:hover, .room-row.force-open { flex: 6; background: rgba(8, 8, 8, 0.9); }
+        .room-label { font-size: 1.4rem; font-weight: 700; min-width: 220px; }
+        .data-reveal { flex-grow: 1; display: flex; align-items: center; gap: 40px; opacity: 0; transform: translateY(20px); transition: 0.4s ease; }
+        .room-row:hover .data-reveal, .room-row.force-open .data-reveal { opacity: 1; transform: translateY(0); }
+        .canvas-wrap { flex-grow: 1; height: 180px; background: #ffffff; border-radius: 2px; padding: 15px; }
+        .power-out { min-width: 180px; font-size: 3rem; text-align: right; font-family: 'Courier New', monospace; }
+
+        /* 6. PAGE 2: TECH DETAILS */
+        .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 2rem 5rem; height: 100%; }
+        .tech-card { background: #0a0a0a; border: 1px solid var(--border-color); padding: 25px; border-top: 2px solid var(--pure-white); }
+        .tech-card h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .status-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 0.9rem; color: #ccc; }
+        .dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); }
+
+        /* 7. PAGE 3: THANK YOU */
+        #page3 { justify-content: flex-start; align-items: center; padding: 2rem; overflow: hidden; }
+        .thank-you-title { font-size: 2.5rem; font-weight: 800; color: var(--pure-white); text-transform: uppercase; letter-spacing: 10px; margin-bottom: 1rem; text-align: center; }
+        .gif-container-fixed { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 1px solid var(--border-color); background: #050505; }
+        .media-box-fixed { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* FOOTER */
+        .pagination {
+            height: 10vh; display: flex; align-items: center; justify-content: center;
+            gap: 20px; border-top: 1px solid var(--border-color); background: #000;
+        }
+        .page-btn {
+            background: transparent; border: 1px solid var(--accent-gray); color: var(--accent-gray);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s;
+        }
+        .page-btn.active { border-color: var(--pure-white); color: var(--pure-white); }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <div id="motor-canvas"></div>
-        <h1>Dorm Energy Monitoring System</h1>
+    <div class="controls-top">
+        <button id="status-toggle" class="btn-style">Link</button>
+        <button id="door-toggle" class="btn-style inactive">OFF</button>
     </div>
 
-    <div class="container">
-        <h3>Live Data Log (Rooms 1-3)</h3>
-        <iframe src="https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pubhtml?widget=true&amp;headers=false"></iframe>
+    <div class="top-content">
+        <div id="motor-container"></div>
+        
+        <div class="title-layer">
+            <h1>Dorm Energy Monitoring</h1>
+            <div class="presented-by">DESIGNED FOR SMART FACILITY MANAGEMENT</div>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <div id="page1" class="page active">
+        <div id="room1" class="room-row">
+            <div class="room-label">ROOM 01 <span style="color:var(--muted-white); font-weight:300; margin-left:10px;">/ NORTH</span></div>
+            <div class="data-reveal">
+                <div class="canvas-wrap"><canvas id="chart1"></canvas></div>
+                <div class="power-out" id="p1">0.00W</div>
+            </div>
+        </div>
+        <div id="room2" class="room-row">
+            <div class="room-label">ROOM 02 <span style="color:var(--muted-white); font-weight:300; margin-left:10px;">/ SOUTH</span></div>
+            <div class="data-reveal">
+                <div class="canvas-wrap"><canvas id="chart2"></canvas></div>
+                <div class="power-out" id="p2">0.00W</div>
+            </div>
+        </div>
+        <div id="room3" class="room-row">
+            <div class="room-label">ROOM 03 <span style="color:var(--muted-white); font-weight:300; margin-left:10px;">/ EAST</span></div>
+            <div class="data-reveal">
+                <div class="canvas-wrap"><canvas id="chart3"></canvas></div>
+                <div class="power-out" id="p3">0.00W</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>Hardware Components</h3>
+                <div class="status-row"><div class="dot"></div> Intel Cyclone IV FPGA (Main Processing)</div>
+                <div class="status-row"><div class="dot"></div> ESP32 Wireless Nodes (Data Transmission)</div>
+                <div class="status-row"><div class="dot"></div> ACS712 Current Sensors (Telemetry)</div>
+            </div>
+            <div class="tech-card">
+                <h3>Analysis Method</h3>
+                <p style="color: #ccc; font-size: 0.9rem;">Real-time Hardware Fatigue Detection based on Power Flux Analysis via FPGA Logic Gates.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
+        <div class="thank-you-title">THANK YOU</div>
+        <div class="gif-container-fixed">
+            <img src="phil-portfolio3.gif" alt="Outcome" class="media-box-fixed">
+        </div>
+    </div>
+
+    <div class="pagination">
+        <button class="page-btn active" onclick="showPage(1)">01</button>
+        <button class="page-btn" onclick="showPage(2)">02</button>
+        <button class="page-btn" onclick="showPage(3)">03</button>
+    </div>
+
     <script>
+        // 1. PSC MOTOR WIREFRAME (Three.js)
         const scene = new THREE.Scene();
-        // Adjusted aspect ratio for the small header box
+        const motorContainer = document.getElementById('motor-container');
         const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        const container = document.getElementById('motor-canvas');
-        renderer.setSize(100, 100);
-        container.appendChild(renderer.domElement);
+        renderer.setSize(300, 300);
+        motorContainer.appendChild(renderer.domElement);
 
-        const group = new THREE.Group();
-        const wireframeMat = new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true });
+        const motorGroup = new THREE.Group();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true });
 
-        // Stator
-        const statorGeo = new THREE.CylinderGeometry(1, 1, 2, 12, 4, true);
-        const stator = new THREE.Mesh(statorGeo, wireframeMat);
-        group.add(stator);
+        // Stator (Main Cylinder)
+        const stator = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 2, 12, 4, true), material);
+        motorGroup.add(stator);
 
-        // Rotor Shaft
-        const shaftGeo = new THREE.CylinderGeometry(0.15, 0.15, 2.8, 8, 1, true);
-        const shaft = new THREE.Mesh(shaftGeo, wireframeMat);
-        group.add(shaft);
+        // Shaft
+        const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2.8, 8, 1, true), material);
+        motorGroup.add(shaft);
 
-        // Capacitor
-        const capGeo = new THREE.BoxGeometry(0.5, 0.8, 0.5);
-        const capacitor = new THREE.Mesh(capGeo, wireframeMat);
-        capacitor.position.set(0.9, 0.3, 0);
-        group.add(capacitor);
+        // Capacitor Box
+        const capacitor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.9, 0.6), material);
+        capacitor.position.set(1, 0.4, 0);
+        motorGroup.add(capacitor);
 
-        scene.add(group);
-        camera.position.z = 4; // Moved slightly closer for small view
+        scene.add(motorGroup);
+        camera.position.z = 4;
 
-        function animate() {
-            requestAnimationFrame(animate);
-            group.rotation.x += 0.01;
-            group.rotation.y += 0.01;
+        function animateMotor() {
+            requestAnimationFrame(animateMotor);
+            motorGroup.rotation.y += 0.005;
+            motorGroup.rotation.x += 0.005;
             renderer.render(scene, camera);
         }
+        animateMotor();
 
-        animate();
+        // 2. PAGE NAVIGATION
+        function showPage(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page' + num).classList.add('active');
+            document.querySelectorAll('.page-btn')[num-1].classList.add('active');
+        }
+
+        // 3. FALLING STARS LOGIC
+        function createStar() {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 1;
+            star.style.width = size + 'px';
+            star.style.height = (Math.random() * 100 + 50) + 'px';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animation = `fall-straight ${Math.random() * 2 + 1}s linear infinite`;
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 3000);
+        }
+        setInterval(createStar, 100);
+
+        // 4. DOOR TOGGLE
+        let doorsOpen = false;
+        const doorBtn = document.getElementById('door-toggle');
+        doorBtn.addEventListener('click', () => {
+            doorsOpen = !doorsOpen;
+            const rooms = [document.getElementById('room1'), document.getElementById('room2'), document.getElementById('room3')];
+            if(doorsOpen) {
+                doorBtn.innerText = "ON"; doorBtn.classList.replace('inactive', 'active');
+                rooms.forEach(r => r.classList.add('force-open'));
+            } else {
+                doorBtn.innerText = "OFF"; doorBtn.classList.replace('active', 'inactive');
+                rooms.forEach(r => r.classList.remove('force-open'));
+            }
+        });
+
+        // 5. CHARTS INITIALIZATION
+        const charts = {};
+        function initChart(id) {
+            return new Chart(document.getElementById('chart'+id), {
+                type: 'line',
+                data: { labels: Array(20).fill(''), datasets: [{ data: Array(20).fill(0), borderColor: '#000', borderWidth: 1, tension: 0.4, pointRadius: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { display: false } }, plugins: { legend: { display: false } } }
+            });
+        }
+        for(let i=1; i<=3; i++) charts[i] = initChart(i);
+
+        // 6. LINK STATUS
+        let isRunning = false;
+        document.getElementById('status-toggle').addEventListener('click', function() {
+            isRunning = !isRunning;
+            this.classList.toggle('connected');
+            this.innerText = isRunning ? "Linked" : "Link";
+        });
     </script>
 </body>
 </html>
