@@ -1,59 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dorm Energy Monitoring - PSC Motor View</title>
+    <title>Dorm Energy Monitoring Dashboard</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; margin: 0; }
+        
+        /* Header styling to put title and motor side-by-side */
+        .header-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+            background: #2d2d2d;
+            border-bottom: 2px solid #00ffcc;
+        }
+
+        h1 { margin: 0 20px; }
+
+        #motor-canvas { 
+            width: 100px; /* Small size for header */
+            height: 100px; 
+        }
+
         .container { width: 90%; margin: 20px auto; background: #2d2d2d; padding: 20px; border-radius: 10px; }
-        #motor-canvas { width: 100%; height: 400px; }
-        iframe { width: 100%; height: 500px; border: none; margin-top: 20px; }
+        iframe { width: 100%; height: 600px; border: none; }
     </style>
 </head>
 <body>
-    <h1>Dorm Energy Monitoring System</h1>
-    
-    <div class="container">
-        <h3>System Load Representation (PSC Motor)</h3>
+
+    <div class="header-container">
         <div id="motor-canvas"></div>
+        <h1>Dorm Energy Monitoring System</h1>
     </div>
 
     <div class="container">
-        <h3>Live Data Log</h3>
+        <h3>Live Data Log (Rooms 1-3)</h3>
         <iframe src="https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pubhtml?widget=true&amp;headers=false"></iframe>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+        // Adjusted aspect ratio for the small header box
+        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
         const container = document.getElementById('motor-canvas');
-        renderer.setSize(container.clientWidth, 400);
+        renderer.setSize(100, 100);
         container.appendChild(renderer.domElement);
 
-        // --- PSC Motor Geometry ---
         const group = new THREE.Group();
-
-        // Stator (Main Body)
-        const statorGeo = new THREE.CylinderGeometry(1, 1, 2, 12, 1, true);
         const wireframeMat = new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true });
+
+        // Stator
+        const statorGeo = new THREE.CylinderGeometry(1, 1, 2, 12, 4, true);
         const stator = new THREE.Mesh(statorGeo, wireframeMat);
         group.add(stator);
 
         // Rotor Shaft
-        const shaftGeo = new THREE.CylinderGeometry(0.2, 0.2, 3, 8, 1, true);
+        const shaftGeo = new THREE.CylinderGeometry(0.15, 0.15, 2.8, 8, 1, true);
         const shaft = new THREE.Mesh(shaftGeo, wireframeMat);
         group.add(shaft);
 
-        // Capacitor Housing (The box on top)
-        const capGeo = new THREE.BoxGeometry(0.6, 0.8, 0.6);
+        // Capacitor
+        const capGeo = new THREE.BoxGeometry(0.5, 0.8, 0.5);
         const capacitor = new THREE.Mesh(capGeo, wireframeMat);
-        capacitor.position.set(0.8, 0.2, 0); // Positioned on the side/top
+        capacitor.position.set(0.9, 0.3, 0);
         group.add(capacitor);
 
         scene.add(group);
-        camera.position.z = 5;
+        camera.position.z = 4; // Moved slightly closer for small view
 
         function animate() {
             requestAnimationFrame(animate);
@@ -61,12 +77,6 @@
             group.rotation.y += 0.01;
             renderer.render(scene, camera);
         }
-
-        window.addEventListener('resize', () => {
-            renderer.setSize(container.clientWidth, 400);
-            camera.aspect = container.clientWidth / 400;
-            camera.updateProjectionMatrix();
-        });
 
         animate();
     </script>
